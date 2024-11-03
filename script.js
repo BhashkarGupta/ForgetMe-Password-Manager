@@ -24,6 +24,11 @@ masterPassword.oninput = () => {
     passwordStrength.textContent = `Strength: ${strength}`;
 };
 
+function handleSubmit(event) {
+    event.preventDefault(); 
+    generatePassword(); 
+}
+
 function calculatePasswordStrength(password) {
     let strength = "Weak";
     if (password.length > 8) strength = "Moderate";

@@ -11,64 +11,66 @@
 <div class="container">
     <h1>Forget Me - Password Manager</h1>
     
-    <!-- Main Inputs -->
-    <label for="masterPassword">Master Password</label>
-    <input type="password" id="masterPassword" required>
-    <div class="password-strength" id="passwordStrength">Strength: Weak</div>
+    <form id="passwordManagerForm" onsubmit="return handleSubmit(event);">
+        <!-- Main Inputs -->
+        <label for="masterPassword">Master Password</label>
+        <input type="password" id="masterPassword" required>
+        <div class="password-strength" id="passwordStrength">Strength: Weak</div>
 
-    <label for="domain">Domain</label>
-    <input type="text" id="domain" required>
-    
-    <label for="firstName">First Name</label>
-    <input type="text" id="firstName">
-
-    <label for="passwordLength">Password Length (4-40)</label>
-    <input type="number" id="passwordLength" min="4" max="40" value="16">
-
-    <!-- Advanced Options -->
-    <button id="advancedOptionsToggle">Advanced Options</button>
-    <div class="advanced-options" id="advancedOptions">
-        <label for="lastName">Last Name</label>
-        <input type="text" id="lastName">
+        <label for="domain">Domain</label>
+        <input type="text" id="domain" required>
         
-        <label for="customString">Custom String</label>
-        <input type="text" id="customString">
-        
-        <label for="month">Month</label>
-        <input type="text" id="month">
-        
-        <label for="year">Year</label>
-        <input type="text" id="year">
-    </div>
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName">
 
-    <!-- Customize Options -->
-    <button id="customizeOptionsToggle">Customize Password</button>
-    <div class="customize-options" id="customizeOptions">
-        <div class="checkbox-group">
-            <label><input type="checkbox" id="numbers" checked> Numbers</label>
-            <label><input type="checkbox" id="lowercase" checked> Lowercase</label>
-        </div>
-        <div class="checkbox-group">
-            <label><input type="checkbox" id="uppercase" checked> Uppercase</label>
-            <label><input type="checkbox" id="symbols" checked> Symbols</label>
-        </div>
-        <div class="checkbox-group">
-            <label><input type="checkbox" id="complexSymbols"> Complex Symbols</label>
-        </div>
-    </div>
+        <label for="passwordLength">Password Length (4-40)</label>
+        <input type="number" id="passwordLength" min="4" max="40" value="16">
 
-    <!-- Generated Password Display -->
-    <div class="result-container">
-        <span id="generatedPassword">Generated Password</span>
-        <button onclick="copyPassword()">Copy</button>
-    </div>
+        <!-- Advanced Options -->
+        <button type="button" id="advancedOptionsToggle">Advanced Options</button>
+        <div class="advanced-options" id="advancedOptions" style="display: none;">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName">
+            
+            <label for="customString">Custom String</label>
+            <input type="text" id="customString">
+            
+            <label for="month">Month</label>
+            <input type="text" id="month">
+            
+            <label for="year">Year</label>
+            <input type="text" id="year">
+        </div>
 
-    <!-- Button Group -->
-    <div class="button-group">
-        <button onclick="generatePassword()">Generate</button>
-        <button onclick="saveConfig()">Save Config</button>
-        <button onclick="loadConfig()">Load Config</button>
-    </div>
+        <!-- Customize Options -->
+        <button type="button" id="customizeOptionsToggle">Customize Password</button>
+        <div class="customize-options" id="customizeOptions" style="display: none;">
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="numbers" checked> Numbers</label>
+                <label><input type="checkbox" id="lowercase" checked> Lowercase</label>
+            </div>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="uppercase" checked> Uppercase</label>
+                <label><input type="checkbox" id="symbols" checked> Symbols</label>
+            </div>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="complexSymbols"> Complex Symbols</label>
+            </div>
+        </div>
+
+        <!-- Generated Password Display -->
+        <div class="result-container">
+            <span id="generatedPassword">Generated Password</span>
+            <button type="button" onclick="copyPassword()">Copy</button>
+        </div>
+
+        <!-- Button Group -->
+        <div class="button-group">
+            <button type="submit">Generate</button>
+            <button type="button" onclick="saveConfig()">Save Config</button>
+            <button type="button" onclick="loadConfig()">Load Config</button>
+        </div>
+    </form>
 </div>
 
 <!-- JavaScript Logic -->
