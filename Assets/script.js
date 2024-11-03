@@ -7,11 +7,18 @@ const customizeOptionsToggle = document.getElementById('customizeOptionsToggle')
 const customizeOptions = document.getElementById('customizeOptions');
 const generatedPassword = document.getElementById('generatedPassword');
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(reg => console.log('Service Worker registered:', reg))
+            .catch(err => console.warn('Service Worker registration failed:', err));
+    });
+}
+
 // Toggle Advanced Options
 advancedOptionsToggle.onclick = () => {
     advancedOptions.style.display = advancedOptions.style.display === 'none' ? 'block' : 'none';
 };
-
 
 // Toggle Customize Options
 customizeOptionsToggle.onclick = () => {
