@@ -1,6 +1,5 @@
 const masterPassword = document.getElementById('masterPassword');
 const domain = document.getElementById('domain');
-const passwordStrength = document.getElementById('passwordStrength');
 const passwordLength = document.getElementById('passwordLength');
 const advancedOptionsToggle = document.getElementById('advancedOptionsToggle');
 const advancedOptions = document.getElementById('advancedOptions');
@@ -32,26 +31,53 @@ darkModeToggle.addEventListener('click', () => {
     darkModeToggle.classList.toggle('active');
 });
 
-
-
-
-// Update Password Strength
-masterPassword.oninput = () => {
-    const strength = calculatePasswordStrength(masterPassword.value);
-    passwordStrength.textContent = `Strength: ${strength}`;
-};
-
 function handleSubmit(event) {
     event.preventDefault(); 
     generatePassword(); 
 }
 
-function calculatePasswordStrength(password) {
-    let strength = "Weak";
-    if (password.length > 8) strength = "Moderate";
-    if (password.length > 12 && /[A-Z]/.test(password) && /[0-9]/.test(password)) strength = "Strong";
-    return strength;
+function updatePasswordStrength(password) {
+    const strengthText = document.getElementById('passwordStrength');
+    const strengthProgress = document.getElementById('strengthProgress');
+    let strength = 0;
+
+    if (password.length >= 8) strength += 25; 
+    if (/[A-Z]/.test(password)) strength += 25; 
+    if (/[a-z]/.test(password)) strength += 25; 
+    if (/[0-9]/.test(password)) strength += 25; 
+    if (/[\W_]/.test(password)) strength += 25; 
+
+    // Update the strength text and progress bar
+    strengthProgress.value = strength;
+
+    // Remove previous strength classes
+    strengthText.classList.remove('weak', 'medium', 'strong');
+
+    if (strength === 0) {
+        strengthText.textContent = 'Strength: Weak';
+        strengthText.classList.add('weak');
+        strengthProgress.className = '';
+    } else if (strength < 100) {
+        strengthText.textContent = 'Strength: Weak';
+        strengthText.classList.add('weak');
+        strengthProgress.className = 'progress-weak';
+    } else if (strength < 125) {
+        strengthText.textContent = 'Strength: Medium';
+        strengthText.classList.add('medium');
+        strengthProgress.className = 'progress-medium';
+    } else {
+        strengthText.textContent = 'Strength: Strong';
+        strengthText.classList.add('strong');
+        strengthProgress.className = 'progress-strong';
+    }
 }
+
+// Event listener for master password input
+document.getElementById('masterPassword').addEventListener('input', (event) => {
+    updatePasswordStrength(event.target.value);
+});
+
+
 
 async function generatePassword() {
     try {

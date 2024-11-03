@@ -132,11 +132,7 @@ button:disabled {
 .result-container.dark-mode {
     background: #555;
 }
-.password-strength {
-    color: #f39c12;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-}
+
 .advanced-options, .customize-options {
     display: none;
     margin-top: 1rem;
@@ -165,6 +161,61 @@ button:disabled {
 .dark-mode-toggle{
     display: flex;
     justify-content: end;
+}
+
+.password-strength-container {
+    margin-bottom: 1rem;
+    margin-top: -0.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.password-strength {
+    font-size: 0.85rem;
+    margin: 0.5rem 0rem;
+    align-self: flex-start;
+    transition: color 0.3s ease;
+}
+
+progress {
+    width: 97%;
+    height: 3px;
+    border-radius: 4px;
+    appearance: none;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #eee; 
+    border-radius: 4px;
+    transition: color 0.3s ease;
+}
+
+progress::-webkit-progress-value {
+    border-radius: 4px;
+}
+
+.progress-weak::-webkit-progress-value {
+    background-color: #e74c3c; 
+}
+
+.progress-medium::-webkit-progress-value {
+    background-color: #f39c12;
+}
+
+.progress-strong::-webkit-progress-value {
+    background-color: #2ecc71;
+}
+
+.password-strength.weak {
+    color: #e74c3c; 
+}
+.password-strength.medium {
+    color: #f39c12; 
+}
+
+.password-strength.strong {
+    color: #2ecc71;
 }
 
 @media (max-width: 600px) {

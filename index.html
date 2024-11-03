@@ -28,7 +28,10 @@
                 <span class="material-icons icon">lock</span> Master Password* :
             </label>
             <input type="password" id="masterPassword" required>
-            <div class="password-strength" id="passwordStrength">Strength: Weak</div>
+            <div class="password-strength-container">
+                <progress id="strengthProgress" value="0" max="100"></progress>
+                <div class="password-strength" id="passwordStrength">Strength: Weak</div>
+            </div>
 
             <label for="domain">
                 <span class="material-icons icon">language</span> Domain* :
