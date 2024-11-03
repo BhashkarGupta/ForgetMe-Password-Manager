@@ -13,10 +13,27 @@ advancedOptionsToggle.onclick = () => {
     advancedOptions.style.display = advancedOptions.style.display === 'none' ? 'block' : 'none';
 };
 
+
 // Toggle Customize Options
 customizeOptionsToggle.onclick = () => {
     customizeOptions.style.display = customizeOptions.style.display === 'none' ? 'block' : 'none';
 };
+
+// Dark mode toggle
+const darkModeToggle = document.getElementById('darkModeToggle');
+darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    document.querySelector('#generatedPassword').classList.toggle('dark-mode');
+    document.querySelector('.container').classList.toggle('dark-mode');
+    const labels = document.querySelectorAll('label');
+    labels.forEach(label => {
+        label.classList.toggle('dark-mode');
+    });
+    darkModeToggle.classList.toggle('active');
+});
+
+
+
 
 // Update Password Strength
 masterPassword.oninput = () => {

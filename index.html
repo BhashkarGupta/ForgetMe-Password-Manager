@@ -10,16 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Pompiere&family=Ribeye+Marrow&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="Assets/styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
-
     <div class="container">
-        <h1>Forget Me</h1>
-        <h2>- Password Manager</h2>
+        <div class="dark-mode-toggle">
+            <span id="darkModeToggle" class="material-icons icon">nightlight</span>
+        </div>
+        <div class="header">
+            <h1>Forget Me</h1>
+            <h2>- Password Manager</h2>
+        </div>
 
         <form id="passwordManagerForm" onsubmit="return handleSubmit(event);">
-            <!-- Main Inputs -->
             <label for="masterPassword">
                 <span class="material-icons icon">lock</span> Master Password* :
             </label>
@@ -31,10 +35,10 @@
             </label>
             <input type="text" id="domain" required>
 
-            <label for="firstName">First Name</label>
+            <label for="firstName">First Name:</label>
             <input type="text" id="firstName">
 
-            <label for="passwordLength">Password Length (4-40)</label>
+            <label for="passwordLength">Password Length (4-40):</label>
             <input type="number" id="passwordLength" min="4" max="40" value="16">
 
             <div class="button-group">
@@ -46,22 +50,20 @@
                 </button>
             </div>
 
-            <!-- Advanced Options -->
             <div class="advanced-options" id="advancedOptions" style="display: none;">
-                <label for="lastName">Last Name</label>
+                <label for="lastName">Last Name:</label>
                 <input type="text" id="lastName">
 
-                <label for="customString">Custom String</label>
+                <label for="customString">Custom String:</label>
                 <input type="text" id="customString">
 
-                <label for="month">Month</label>
+                <label for="month">Month:</label>
                 <input type="text" id="month">
 
-                <label for="year">Year</label>
+                <label for="year">Year:</label>
                 <input type="text" id="year">
             </div>
 
-            <!-- Customize Options -->
             <div class="customize-options" id="customizeOptions" style="display: none;">
                 <div class="checkbox-group">
                     <label><input type="checkbox" id="enforceSelection" checked> Enforce Selection</label>
@@ -75,7 +77,6 @@
                 </div>
             </div>
 
-            <!-- Generated Password Display -->
             <div class="result-container">
                 <span id="generatedPassword">Generated Password</span>
                 <button type="button" onclick="copyPassword()">
@@ -83,7 +84,6 @@
                 </button>
             </div>
 
-            <!-- Button Group -->
             <div class="button-group">
                 <button type="submit">
                     <span class="material-icons icon">vpn_key</span> Generate
@@ -98,8 +98,16 @@
         </form>
     </div>
 
-    <!-- JavaScript Logic -->
     <script src="Assets/script.js"></script>
+    <script>
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            document.querySelector('.container').classList.toggle('dark-mode');
+            darkModeToggle.classList.toggle('active');
+        });
+    </script>
 </body>
 
 </html>

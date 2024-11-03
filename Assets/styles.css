@@ -10,22 +10,40 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    transition: background 0.3s, color 0.3s;
+}
+body.dark-mode {
+    background: #333;
+    color: #f4f4f9;
+    
 }
 .container {
     background: #fff;
     padding: 2rem;
     width: 100%;
     max-width: 600px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin: 1rem;
     border: 2px solid #4A90E2;
+    transition: background 0.3s, border 0.3s;
+}
+.container.dark-mode {
+    background: #444;
+    border: 2px solid #4A90E2;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 1rem;
 }
 h1 {
     font-size: 4rem;
     color: #4A90E2;
     text-align: center;
-    margin-bottom: 0.2rem;
+    margin: 0.2rem;
     font-family: 'Ribeye Marrow', 'Courier New', Courier, monospace;
 }
 h2 {
@@ -40,13 +58,23 @@ label {
     color: #555;
     display: block;
 }
+label.dark-mode{
+    color: #fff;
+}
+#generatedPassword.dark-mode{
+    color: #555;
+}
 input[type="text"], input[type="password"], input[type="number"] {
     width: 100%;
     padding: 0.5rem;
     margin-bottom: 1rem;
     border: 1px solid #ddd;
     border-radius: 4px;
-    vertical-align: middle;
+    transition: border-color 0.3s, background 0.3s;
+}
+input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus {
+    border-color: #4A90E2;
+    outline: none;
 }
 input[type="checkbox"] {
     margin-right: 0.5rem;
@@ -78,6 +106,15 @@ button {
     flex: 1 1 48%; 
     margin: 0.5rem; 
     min-width: 120px; 
+    transition: background-color 0.3s, transform 0.2s;
+}
+button:hover {
+    background-color: #54bb35; 
+    transform: translateY(-3px);
+}
+input:hover {
+    border-color: #54bb35; 
+    transform: translateY(-1px);
 }
 button:disabled {
     background-color: #ccc;
@@ -90,6 +127,10 @@ button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background 0.3s;
+}
+.result-container.dark-mode {
+    background: #555;
 }
 .password-strength {
     color: #f39c12;
@@ -111,16 +152,26 @@ button:disabled {
 }
 
 .icon {
-    font-size: 18px;       
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.3s;
     vertical-align: middle;
     line-height: 1;         
-    margin-right: 4px;     
+    margin-right: 4px;
+}
+.icon.active {
+    transform: rotate(180deg);
+}
+.dark-mode-toggle{
+    display: flex;
+    justify-content: end;
 }
 
 @media (max-width: 600px) {
     .container {
         padding: 1rem;
-        margin: 0.5rem;
+        margin: 6rem 0.5rem;
+        margin-bottom: 0px;
     }
     h1 {
         font-size: 3.5rem;
