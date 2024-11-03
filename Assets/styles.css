@@ -15,16 +15,24 @@ body {
     background: #fff;
     padding: 2rem;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin: 1rem;
+    border: 2px solid #4A90E2;
 }
 h1 {
-    font-size: 1.8rem;
+    font-size: 4rem;
     color: #4A90E2;
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.2rem;
+    font-family: 'Ribeye Marrow', 'Courier New', Courier, monospace;
+}
+h2 {
+    font-family: 'Pompiere', Courier, monospace;
+    text-align: right;
+    margin-bottom: 1.5rem;
+    margin-top: 0.2rem;
 }
 label {
     font-size: 0.9rem;
@@ -38,6 +46,7 @@ input[type="text"], input[type="password"], input[type="number"] {
     margin-bottom: 1rem;
     border: 1px solid #ddd;
     border-radius: 4px;
+    vertical-align: middle;
 }
 input[type="checkbox"] {
     margin-right: 0.5rem;
@@ -45,8 +54,8 @@ input[type="checkbox"] {
 .checkbox-group {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    margin-bottom: 1rem;
+    justify-content: space-between;
+    margin: 0.7rem 0;
 }
 .checkbox-group label {
     font-size: 0.85rem;
@@ -77,7 +86,7 @@ button:disabled {
     background: #eef;
     padding: 1rem;
     margin-top: 1rem;
-    border-radius: 4px;
+    border-radius: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -90,15 +99,23 @@ button:disabled {
 .advanced-options, .customize-options {
     display: none;
     margin-top: 1rem;
+    border: 2px solid #4A90E2;
+    border-radius: 6px;
+    padding: 0.75rem;
 }
-
 
 .result-container button {
     margin-left: 1rem; 
     padding: 0.4rem 0.6rem; 
-    flex: 0 0 auto; 
+    flex: 0 0 auto;
 }
 
+.icon {
+    font-size: 18px;       
+    vertical-align: middle;
+    line-height: 1;         
+    margin-right: 4px;     
+}
 
 @media (max-width: 600px) {
     .container {
@@ -106,7 +123,7 @@ button:disabled {
         margin: 0.5rem;
     }
     h1 {
-        font-size: 1.5rem;
+        font-size: 3.5rem;
     }
     .result-container {
         flex-direction: column;
@@ -129,5 +146,9 @@ button:disabled {
         flex-wrap: wrap; 
         justify-content: space-between;
         margin-top: 1rem;
+    }
+    #generatedPassword{
+        margin: 1rem 0;
+        text-align: center;
     }
 }

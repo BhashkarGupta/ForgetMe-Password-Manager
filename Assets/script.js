@@ -64,9 +64,9 @@ async function generatePassword() {
                 symbols: document.getElementById('symbols').checked,
                 complexSymbols: document.getElementById('complexSymbols').checked
             },
-            false
+            document.getElementById('enforceSelection').checked
         );
-        console.log(document.getElementById('numbers').checked, document.getElementById('lowercase').checked, document.getElementById('uppercase').checked, document.getElementById('symbols').checked, document.getElementById('complexSymbols').checked);
+        console.log(document.getElementById('enforceSelection').checked, document.getElementById('numbers').checked, document.getElementById('lowercase').checked, document.getElementById('uppercase').checked, document.getElementById('symbols').checked, document.getElementById('complexSymbols').checked);
         console.log(userJson.charSet);
         const finalJson = generateUserString(userJson);
         // console.log(finalJson);
