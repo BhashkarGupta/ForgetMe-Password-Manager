@@ -21,7 +21,7 @@
             <span id="darkModeToggle" class="material-icons icon">nightlight</span>
         </div>
         <div class="header">
-            <h1>Forget Me</h1>
+            <h1 id="main-title">Forget Me</h1>
             <h2>- Password Manager</h2>
         </div>
 
@@ -120,6 +120,23 @@
     </div>
 
     <script src="Assets/script.js"></script>
+    <script>
+        function updateTitle() {
+            const title = document.getElementById('main-title');
+            if (window.innerWidth > 600) {
+                title.innerHTML = '> Forget Me <';
+            } else {
+                title.innerHTML = 'Forget Me';
+            }
+        }
+    
+        // Initial call
+        updateTitle();
+    
+        // Update on resize
+        window.addEventListener('resize', updateTitle);
+    </script>
+    
 </body>
 
 </html>
