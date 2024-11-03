@@ -10,7 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Pompiere&family=Ribeye+Marrow&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="Assets/styles.css">
-    <link rel="manifest" href="https://raw.githubusercontent.com/BhashkarGupta/ForgetMe-Password-Manager/refs/heads/master/manifest.json">
+    <link rel="manifest"
+        href="https://raw.githubusercontent.com/BhashkarGupta/ForgetMe-Password-Manager/refs/heads/master/manifest.json">
     <link rel="icon" href="./Assets/favicon24.png" type="image/png">
 </head>
 
@@ -35,7 +36,7 @@
             </div>
 
             <label for="domain">
-                <span class="material-icons icon">language</span> Domain* :
+                <span class="material-icons icon">language</span> Domain* : (eg:google.com)
             </label>
             <input type="text" id="domain" required>
 
@@ -61,11 +62,27 @@
                 <label for="customString">Custom String:</label>
                 <input type="text" id="customString">
 
-                <label for="month">Month:</label>
-                <input type="text" id="month">
 
-                <label for="year">Year:</label>
-                <input type="text" id="year">
+
+
+                <label for="year">Year: (1950-2050):</label>
+                <input type="number" id="year" min="1950" max="2050" value="2024">
+                <label for="month">Month:</label>
+                <select id="month">
+                    <option value="" disabled selected>Select Month</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
             </div>
 
             <div class="customize-options" id="customizeOptions" style="display: none;">
