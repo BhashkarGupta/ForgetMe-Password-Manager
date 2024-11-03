@@ -9,7 +9,7 @@ const generatedPassword = document.getElementById('generatedPassword');
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('https://raw.githubusercontent.com/BhashkarGupta/ForgetMe-Password-Manager/refs/heads/master/service-worker.js')
             .then(reg => console.log('Service Worker registered:', reg))
             .catch(err => console.warn('Service Worker registration failed:', err));
     });
