@@ -2,7 +2,7 @@
 {
   "name": "Forget Me - Password Manager",
   "short_name": "Forget Me",
-  "start_url": "./index.html",
+  "start_url": "https://bhashkargupta.github.io/ForgetMe-Password-Manager/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4A90E2",
