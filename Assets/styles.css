@@ -219,9 +219,12 @@ progress::-webkit-progress-value {
 }
 
 @media (max-width: 600px) {
+    body{
+        height: auto;
+    }
     .container {
         padding: 1rem;
-        margin: 6rem 0.5rem;
+        margin: 0.1rem 0.5rem;
         margin-bottom: 0px;
     }
     h1 {
