@@ -31,43 +31,6 @@ function calculatePasswordStrength(password) {
     return strength;
 }
 
-// Generate Password
-// async function generatePassword() {
-//     try {
-//         const firstName = document.getElementById('firstName').value; // Retrieve first name
-//         const lastName = document.getElementById('lastName').value; // Retrieve last name
-//         const customString = document.getElementById('customString').value; // Retrieve custom string
-//         const month = document.getElementById('month').value; // Retrieve month
-//         const year = document.getElementById('year').value; // Retrieve year
-
-//         const userJson = userFunction(
-//             domain.value,
-//             firstName,
-//             lastName,
-//             customString,
-//             month,
-//             year,
-//             parseInt(passwordLength.value, 10),
-//             {
-//                 numbers: document.getElementById('numbers').checked,
-//                 lowercase: document.getElementById('lowercase').checked,
-//                 uppercase: document.getElementById('uppercase').checked,
-//                 symbols: document.getElementById('symbols').checked,
-//                 complexSymbols: document.getElementById('complexSymbols').checked
-//             },
-//             true
-//         );
-
-//         const finalJson = generateUserString(userJson);
-//         const password = await generatePasswordFromHash(masterPassword.value, finalJson);
-
-//         generatedPassword.textContent = password;
-//     } catch (error) {
-//         console.error(error.message);
-//         alert(error.message);
-//     }
-// }
-
 async function generatePassword() {
     try {
         const masterPassword = document.getElementById('masterPassword').value;
@@ -96,9 +59,10 @@ async function generatePassword() {
                 symbols: document.getElementById('symbols').checked,
                 complexSymbols: document.getElementById('complexSymbols').checked
             },
-            true
+            false
         );
-        // console.log(userJson);
+        console.log(document.getElementById('numbers').checked, document.getElementById('lowercase').checked, document.getElementById('uppercase').checked, document.getElementById('symbols').checked, document.getElementById('complexSymbols').checked);
+        console.log(userJson.charSet);
         const finalJson = generateUserString(userJson);
         // console.log(finalJson);
         const password = await generatePasswordFromHash(masterPassword, finalJson);
@@ -169,11 +133,11 @@ function userFunction(domain, firstName, lastName, customString, month, year, pa
         passwordLength: passwordLength,
         enforceCharTypes: enforceCharTypes || true,
         charSet: {
-            numbers: charSet.numbers || true,
-            lowercase: charSet.lowercase || true,
-            uppercase: charSet.uppercase || true,
-            symbols: charSet.symbols || true,
-            complexSymbols: charSet.complexSymbols || false
+            numbers: charSet.numbers !== false,        
+            lowercase: charSet.lowercase !== false,   
+            uppercase: charSet.uppercase !== false,    
+            symbols: charSet.symbols !== false,       
+            complexSymbols: charSet.complexSymbols || false 
         }
     };
 }
@@ -194,8 +158,6 @@ function generateUserString(userJson) {
         passwordLength: userJson.passwordLength,
         enforceCharTypes: userJson.enforceCharTypes,
         charSet: userJson.charSet
-        // month: userJson.month,
-        // year: userJson.year
     };
 }
 
@@ -237,41 +199,63 @@ async function generatePasswordFromHash(masterPassword, finalJson) {
         characterSet += complexSymbols;
         selectedCharSets.push(complexSymbols);
     }
-    // console.log(characterSet);
+    // console.log(characterSet, characterSet.length);
 
     let password = "";
     const hashArray = new Uint8Array(finalHash);
-    console.log(hashArray);
+    // console.log(hashArray);
     const hashLength = hashArray.length;
+    // console.log(hashLength);
 
     for (let i = 0; i < finalJson.passwordLength; i++) {
-        const byte = hashArray[i % hashLength];
+        const byte = hashArray[i % hashLength]; // since using SHA256 (limited to 32 bytes, but password lengh allowed is 40)
         const randomIndex = byte % characterSet.length;
         password += characterSet[randomIndex];
-        console.log("trigger1");
+        // console.log(password);
+        // console.log("trigger1");
     }
 
     if (finalJson.enforceCharTypes) {
         const numTypesToEnforce = selectedCharSets.length;
         let positions = [];
 
-        for (let i = 0; i < numTypesToEnforce; i++) {
-            let position;
-            console.log("trigger2");
-            while (true) {
-                const byte = hashArray[(i + 1) % hashLength];
-                position = byte % finalJson.passwordLength;
-
-                if (!positions.includes(position)) {
-                    positions.push(position);
-                    break;
+        for (let count = 0; count < hashLength; count++) {
+            let position = hashArray[count] % finalJson.passwordLength;
+            if (!positions.includes(position)) {
+                positions.push(position);
+            }
+            // console.log("trigger3");
+        }
+        if (positions.length < numTypesToEnforce) {
+            if (positions[-1] == 0) {
+                let position;
+                let count = 1;
+                while (positions.length < numTypesToEnforce) {
+                    position = positions[-1] + count;
+                    count++;
+                    if (!positions.includes(position)) {
+                        positions.push(position);
+                    }
+                    // console.log("trigger+");
                 }
-                console.log("trigger3");
+            }
+            if (positions[-1] == (finalJson.passwordLength - 1)) {
+                let position;
+                let count = 1;
+                while (positions.length < numTypesToEnforce) {
+                    position = positions[-1] - count;
+                    count++;
+                    if (!positions.includes(position)) {
+                        positions.push(position);
+                    }
+                    // console.log("trigger-");
+                }
             }
         }
 
+
         for (let i = 0; i < numTypesToEnforce; i++) {
-            console.log("trigger4");
+            // console.log("trigger4");
             const charSet = selectedCharSets[i];
             const byte = hashArray[(i + numTypesToEnforce) % hashLength];
             const charIndex = byte % charSet.length;
