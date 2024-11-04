@@ -155,7 +155,7 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     transition: background 0.3s;
-    border: solid 2px #ff7b00;
+    border: solid 2px #54bb35;
 }
 
 .result-container.dark-mode {
@@ -300,15 +300,15 @@ ol>li {
     background-color: #fff;
     margin: 15% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: 2px solid #54bb35;
     min-width: 300px;
-    max-width: 600px;
+    max-width: 550px;
     border-radius: 8px;
 }
 
 .popup-content.dark-mode {
     background-color: #888;
-    border: 1px solid #ffffff;
+    border: 2px solid #54bb35;
 }
 
 .close {
@@ -343,7 +343,7 @@ ol>li {
     .result-container {
         flex-direction: column;
         align-items: stretch;
-        border: solid 2px #ff7b00;
+        border: solid 2px #54bb35;
     }
 
     .result-container button {
