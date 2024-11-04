@@ -157,30 +157,32 @@ function copyPassword() {
 // Save Config
 function saveConfig() {
     const config = {
-        masterPassword: masterPassword.value,
         domain: domain.value,
-        passwordLength: passwordLength.value,
         firstName: firstName.value,
         lastName: lastName.value,
         customString: customString.value,
         month: month.value,
         year: year.value,
-        numbers: document.getElementById('numbers').checked,
-        lowercase: document.getElementById('lowercase').checked,
-        uppercase: document.getElementById('uppercase').checked,
-        symbols: document.getElementById('symbols').checked,
-        complexSymbols: document.getElementById('complexSymbols').checked
+        passwordLength: passwordLength.value,
+        enforceCharTypes: document.getElementById('enforceSelection').checked,
+        charSet:{
+            numbers: document.getElementById('numbers').checked,
+            lowercase: document.getElementById('lowercase').checked,
+            uppercase: document.getElementById('uppercase').checked,
+            symbols: document.getElementById('symbols').checked,
+            complexSymbols: document.getElementById('complexSymbols').checked
+        }
     };
     const configBlob = new Blob([JSON.stringify(config)], { type: "application/json" });
     const downloadLink = document.createElement("a");
     downloadLink.href = URL.createObjectURL(configBlob);
-    downloadLink.download = "config.json";
+    downloadLink.download = "ForgetMe.json";
     downloadLink.click();
 }
 
 // Load Config
 function loadConfig() {
-    alert("Load Config functionality is not yet implemented.");
+    alert("On it's way, I'm still working on it!");
 }
 
 // 1. User Function: Generates the initial JSON structure
