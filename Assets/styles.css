@@ -2,6 +2,7 @@
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
+
 body {
     background: #f4f4f9;
     background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='160' height='160' patternTransform='scale(3) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='%23f4f4f9ff'/><path d='M121.5 39.5V9.169c0-2.827 1.724-4.707 3.473-5.602l.707-.362c2.086-1.068 4.702-.631 6.359 1.026l1.985 1.985c1.349 1.349 3.235 2.018 5.14 2.128 12.336 0 12.336-18.505 0-18.505M40.75 39.499V9.17c0-2.827-1.724-4.707-3.473-5.602l-.707-.362c-2.086-1.068-4.702-.631-6.359 1.026l-1.985 1.985c-1.349 1.349-3.236 2.018-5.14 2.128-12.336 0-12.336-18.505 0-18.505m146.575 111.248c0-12.337-18.505-12.337-18.505 0 .11 1.904.78 3.79 2.128 5.139l1.985 1.985c1.657 1.657 2.094 4.273 1.026 6.36l-.362.706c-.895 1.75-2.775 3.474-5.602 3.474l-30.33-.001m49.66-63.086c0 12.336-18.505 12.336-18.505 0 .11-1.904.78-3.791 2.128-5.14l1.985-1.985c1.657-1.657 2.094-4.273 1.026-6.359l-.362-.707c-.895-1.749-2.775-3.474-5.602-3.473h-30.33m19.162 130.344c12.337 0 12.337-18.505 0-18.505-1.631 0-3.99.98-5.139 2.128l-1.985 1.985c-1.656 1.656-4.274 2.094-6.36 1.027l-.706-.362c-2.086-1.069-3.474-3.258-3.474-5.602v-34.302l.001-26.228c0-2.344-1.427-4.458-3.473-5.602l-.707-.361a5.83 5.83 0 00-6.36 1.026l-1.984 1.985c-1.144 1.152-3.508 2.128-5.14 2.128-12.336 0-12.336-18.505 0-18.505 1.904.11 3.715.86 5.14 2.128l1.985 1.985a5.812 5.812 0 006.359 1.026l.707-.362c1.287-1.485 3.473-2.775 3.473-5.602v-30.33M23.086 168.343c-12.336 0-12.336-18.505 0-18.505 1.632 0 3.992.98 5.14 2.128l1.985 1.985c1.656 1.656 4.274 2.094 6.359 1.027l.707-.362c2.086-1.069 3.474-3.258 3.474-5.602l-.001-34.302V88.485c0-2.344 1.387-4.533 3.473-5.602l.707-.361c2.085-1.068 4.703-.63 6.359 1.026l1.985 1.985c1.148 1.148 3.508 2.128 5.14 2.128 12.336 0 12.336-18.505 0-18.505-1.905.11-3.791.78-5.14 2.128l-1.985 1.985c-1.657 1.657-4.273 2.094-6.36 1.026l-.706-.362c-1.75-.895-3.474-2.775-3.474-5.602v-30.33m80.75 80.749H91.17c-2.827 0-4.707 1.724-5.602 3.473l-.362.707c-1.068 2.086-.631 4.702 1.026 6.359l1.985 1.985c1.349 1.349 2.018 3.236 2.128 5.14 0 12.336-18.505 12.336-18.505 0 0-1.632.98-3.992 2.128-5.14l1.985-1.985c1.656-1.656 2.094-4.274 1.026-6.359l-.361-.707c-1.069-2.086-3.258-3.474-5.602-3.473h-60.53c-2.344 0-4.533-1.387-5.602-3.473l-.362-.707c-1.067-2.085-.63-4.703 1.027-6.359l1.985-1.985c1.148-1.148 2.128-3.508 2.128-5.14 0-12.336-18.505-12.336-18.505 0M121.5 38H91.169c-2.827 0-4.707-1.724-5.602-3.473l-.362-.707c-1.068-2.086-.631-4.702 1.026-6.359l1.985-1.985c1.349-1.349 2.018-3.235 2.128-5.14C90.344 8 71.84 8 71.84 20.337c0 1.632.977 3.994 2.128 5.14.663.66 1.343 1.305 1.985 1.985 1.608 1.703 2.003 4.23 1.026 6.36-.11.24-.233.474-.361.706C75.48 36.577 73.359 38 71.015 38H36.712L10.485 38c-2.344 0-4.533 1.387-5.602 3.473-.12.236-.24.471-.362.707-1.067 2.085-.63 4.703 1.027 6.36l1.985 1.984c1.148 1.148 2.128 3.508 2.128 5.14C9.66 68-8.844 68-8.844 55.664'  stroke-width='1' stroke='%2343d34a4d' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>");
@@ -12,13 +13,15 @@ body {
     height: 100vh;
     margin: 0;
     transition: background 0.3s, color 0.3s;
+    position: relative;
 }
+
 body.dark-mode {
     background: #333;
     background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='160' height='160' patternTransform='scale(3) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='%231d1d20ff'/><path d='M121.5 39.5V9.169c0-2.827 1.724-4.707 3.473-5.602l.707-.362c2.086-1.068 4.702-.631 6.359 1.026l1.985 1.985c1.349 1.349 3.235 2.018 5.14 2.128 12.336 0 12.336-18.505 0-18.505M40.75 39.499V9.17c0-2.827-1.724-4.707-3.473-5.602l-.707-.362c-2.086-1.068-4.702-.631-6.359 1.026l-1.985 1.985c-1.349 1.349-3.236 2.018-5.14 2.128-12.336 0-12.336-18.505 0-18.505m146.575 111.248c0-12.337-18.505-12.337-18.505 0 .11 1.904.78 3.79 2.128 5.139l1.985 1.985c1.657 1.657 2.094 4.273 1.026 6.36l-.362.706c-.895 1.75-2.775 3.474-5.602 3.474l-30.33-.001m49.66-63.086c0 12.336-18.505 12.336-18.505 0 .11-1.904.78-3.791 2.128-5.14l1.985-1.985c1.657-1.657 2.094-4.273 1.026-6.359l-.362-.707c-.895-1.749-2.775-3.474-5.602-3.473h-30.33m19.162 130.344c12.337 0 12.337-18.505 0-18.505-1.631 0-3.99.98-5.139 2.128l-1.985 1.985c-1.656 1.656-4.274 2.094-6.36 1.027l-.706-.362c-2.086-1.069-3.474-3.258-3.474-5.602v-34.302l.001-26.228c0-2.344-1.427-4.458-3.473-5.602l-.707-.361a5.83 5.83 0 00-6.36 1.026l-1.984 1.985c-1.144 1.152-3.508 2.128-5.14 2.128-12.336 0-12.336-18.505 0-18.505 1.904.11 3.715.86 5.14 2.128l1.985 1.985a5.812 5.812 0 006.359 1.026l.707-.362c1.287-1.485 3.473-2.775 3.473-5.602v-30.33M23.086 168.343c-12.336 0-12.336-18.505 0-18.505 1.632 0 3.992.98 5.14 2.128l1.985 1.985c1.656 1.656 4.274 2.094 6.359 1.027l.707-.362c2.086-1.069 3.474-3.258 3.474-5.602l-.001-34.302V88.485c0-2.344 1.387-4.533 3.473-5.602l.707-.361c2.085-1.068 4.703-.63 6.359 1.026l1.985 1.985c1.148 1.148 3.508 2.128 5.14 2.128 12.336 0 12.336-18.505 0-18.505-1.905.11-3.791.78-5.14 2.128l-1.985 1.985c-1.657 1.657-4.273 2.094-6.36 1.026l-.706-.362c-1.75-.895-3.474-2.775-3.474-5.602v-30.33m80.75 80.749H91.17c-2.827 0-4.707 1.724-5.602 3.473l-.362.707c-1.068 2.086-.631 4.702 1.026 6.359l1.985 1.985c1.349 1.349 2.018 3.236 2.128 5.14 0 12.336-18.505 12.336-18.505 0 0-1.632.98-3.992 2.128-5.14l1.985-1.985c1.656-1.656 2.094-4.274 1.026-6.359l-.361-.707c-1.069-2.086-3.258-3.474-5.602-3.473h-60.53c-2.344 0-4.533-1.387-5.602-3.473l-.362-.707c-1.067-2.085-.63-4.703 1.027-6.359l1.985-1.985c1.148-1.148 2.128-3.508 2.128-5.14 0-12.336-18.505-12.336-18.505 0M121.5 38H91.169c-2.827 0-4.707-1.724-5.602-3.473l-.362-.707c-1.068-2.086-.631-4.702 1.026-6.359l1.985-1.985c1.349-1.349 2.018-3.235 2.128-5.14C90.344 8 71.84 8 71.84 20.337c0 1.632.977 3.994 2.128 5.14.663.66 1.343 1.305 1.985 1.985 1.608 1.703 2.003 4.23 1.026 6.36-.11.24-.233.474-.361.706C75.48 36.577 73.359 38 71.015 38H36.712L10.485 38c-2.344 0-4.533 1.387-5.602 3.473-.12.236-.24.471-.362.707-1.067 2.085-.63 4.703 1.027 6.36l1.985 1.984c1.148 1.148 2.128 3.508 2.128 5.14C9.66 68-8.844 68-8.844 55.664'  stroke-width='1' stroke='%2345d34ca3' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>");
     color: #f4f4f9;
-    
 }
+
 .container {
     background: #fff;
     padding: 2rem;
@@ -30,10 +33,12 @@ body.dark-mode {
     border: 2px solid #4A90E2;
     transition: background 0.3s, border 0.3s;
 }
+
 .container.dark-mode {
     background: #444;
     border: 2px solid #4A90E2;
 }
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -41,6 +46,7 @@ body.dark-mode {
     flex-direction: column;
     margin-bottom: 1rem;
 }
+
 h1 {
     font-size: 4rem;
     color: #4A90E2;
@@ -48,25 +54,32 @@ h1 {
     margin: 0.2rem;
     font-family: 'Ribeye Marrow', 'Courier New', Courier, monospace;
 }
+
 h2 {
     font-family: 'Pompiere', Courier, monospace;
     text-align: right;
     margin-bottom: 1.5rem;
     margin-top: 0.2rem;
 }
+
 label {
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
     color: #555;
     display: block;
 }
-label.dark-mode{
+
+label.dark-mode {
     color: #fff;
 }
-#generatedPassword.dark-mode{
+
+#generatedPassword.dark-mode {
     color: #555;
 }
-input[type="text"], input[type="password"], input[type="number"] {
+
+input[type="text"],
+input[type="password"],
+input[type="number"] {
     width: 100%;
     padding: 0.5rem;
     margin-bottom: 1rem;
@@ -74,29 +87,37 @@ input[type="text"], input[type="password"], input[type="number"] {
     border-radius: 4px;
     transition: border-color 0.3s, background 0.3s;
 }
-input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus {
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus {
     border-color: #4A90E2;
     outline: none;
 }
+
 input[type="checkbox"] {
     margin-right: 0.5rem;
 }
+
 .checkbox-group {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin: 0.7rem 0;
 }
+
 .checkbox-group label {
     font-size: 0.85rem;
     display: flex;
     align-items: center;
 }
+
 .button-group {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
 }
+
 button {
     background-color: #4A90E2;
     color: white;
@@ -105,22 +126,26 @@ button {
     cursor: pointer;
     border-radius: 4px;
     font-size: 0.9rem;
-    flex: 1 1 48%; 
-    margin: 0.5rem; 
-    min-width: 120px; 
+    flex: 1 1 48%;
+    margin: 0.5rem;
+    min-width: 120px;
     transition: background-color 0.3s, transform 0.2s;
 }
+
 button:hover {
-    background-color: #54bb35; 
+    background-color: #54bb35;
     transform: translateY(-3px);
 }
+
 input:hover {
-    border-color: #54bb35; 
+    border-color: #54bb35;
     transform: translateY(-1px);
 }
+
 button:disabled {
     background-color: #ccc;
 }
+
 .result-container {
     background: #eef;
     padding: 1rem;
@@ -131,11 +156,13 @@ button:disabled {
     align-items: center;
     transition: background 0.3s;
 }
+
 .result-container.dark-mode {
     background: #555;
 }
 
-.advanced-options, .customize-options {
+.advanced-options,
+.customize-options {
     display: none;
     margin-top: 1rem;
     border: 2px solid #4A90E2;
@@ -144,8 +171,8 @@ button:disabled {
 }
 
 .result-container button {
-    margin-left: 1rem; 
-    padding: 0.4rem 0.6rem; 
+    margin-left: 1rem;
+    padding: 0.4rem 0.6rem;
     flex: 0 0 auto;
 }
 
@@ -154,13 +181,15 @@ button:disabled {
     cursor: pointer;
     transition: transform 0.3s;
     vertical-align: middle;
-    line-height: 1;         
+    line-height: 1;
     margin-right: 4px;
 }
+
 .icon.active {
     transform: rotate(180deg);
 }
-.dark-mode-toggle{
+
+.dark-mode-toggle {
     display: flex;
     justify-content: end;
 }
@@ -188,7 +217,7 @@ progress {
 }
 
 progress::-webkit-progress-bar {
-    background-color: #eee; 
+    background-color: #eee;
     border-radius: 4px;
     transition: color 0.3s ease;
 }
@@ -198,7 +227,7 @@ progress::-webkit-progress-value {
 }
 
 .progress-weak::-webkit-progress-value {
-    background-color: #e74c3c; 
+    background-color: #e74c3c;
 }
 
 .progress-medium::-webkit-progress-value {
@@ -210,10 +239,11 @@ progress::-webkit-progress-value {
 }
 
 .password-strength.weak {
-    color: #e74c3c; 
+    color: #e74c3c;
 }
+
 .password-strength.medium {
-    color: #f39c12; 
+    color: #f39c12;
 }
 
 .password-strength.strong {
@@ -229,46 +259,123 @@ select {
     font-size: 0.9rem;
 }
 
+/* .sub-header{
+    display: flex;
+    flex-direction: row;
+    width: 95%;
+    margin-bottom: 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+} */
+.sticky-button {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    height: 40px;
+    background-color: #ff7b00;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    font-weight: bolder;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+ol>li {
+    margin-bottom: 0.5rem;
+}
+
+.popup-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    min-width: 300px;
+    max-width: 600px;
+    border-radius: 8px;
+}
+.popup-content.dark-mode {
+    background-color: #888;
+    border: 1px solid #ffffff;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 
 @media (max-width: 600px) {
-    body{
+    body {
         height: auto;
     }
+
     .container {
         padding: 1rem;
         margin: 0.1rem 0.5rem;
-        margin-bottom: 0px;
+        margin-bottom: 70px;
     }
+
     h1 {
         font-size: 3.5rem;
     }
+
     .result-container {
         flex-direction: column;
         align-items: stretch;
     }
+
     .result-container button {
         width: 100%;
         margin-top: 0.5rem;
-        margin-left: 0; 
+        margin-left: 0;
     }
+
     .checkbox-group {
         flex-direction: column;
         align-items: flex-start;
     }
+
     .checkbox-group label {
         margin-bottom: 0.3rem;
     }
+
     .button-group {
         display: flex;
-        flex-wrap: wrap; 
+        flex-wrap: wrap;
         justify-content: space-between;
         margin-top: 1rem;
     }
-    #generatedPassword{
+
+    #generatedPassword {
         margin: 1rem 0;
         text-align: center;
     }
+
+    .sticky-button {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        height: 40px;
+        border-radius: 20px;
+        font-weight: lighter;
+    }
 }
-
-
-

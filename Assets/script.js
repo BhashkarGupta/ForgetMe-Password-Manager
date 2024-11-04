@@ -31,6 +31,7 @@ darkModeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     document.querySelector('#generatedPassword').classList.toggle('dark-mode');
     document.querySelector('.container').classList.toggle('dark-mode');
+    document.querySelector('.popup-content').classList.toggle('dark-mode');
     const labels = document.querySelectorAll('label');
     labels.forEach(label => {
         label.classList.toggle('dark-mode');
@@ -39,8 +40,8 @@ darkModeToggle.addEventListener('click', () => {
 });
 
 function handleSubmit(event) {
-    event.preventDefault(); 
-    generatePassword(); 
+    event.preventDefault();
+    generatePassword();
 }
 
 function updatePasswordStrength(password) {
@@ -48,11 +49,11 @@ function updatePasswordStrength(password) {
     const strengthProgress = document.getElementById('strengthProgress');
     let strength = 0;
 
-    if (password.length >= 8) strength += 25; 
-    if (/[A-Z]/.test(password)) strength += 25; 
-    if (/[a-z]/.test(password)) strength += 25; 
-    if (/[0-9]/.test(password)) strength += 25; 
-    if (/[\W_]/.test(password)) strength += 25; 
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[a-z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    if (/[\W_]/.test(password)) strength += 25;
 
     // Update the strength text and progress bar
     strengthProgress.value = strength;
@@ -84,16 +85,32 @@ document.getElementById('masterPassword').addEventListener('input', (event) => {
     updatePasswordStrength(event.target.value);
 });
 
+document.getElementById('openPopup').onclick = function () {
+    document.getElementById('popup').style.display = 'block';
+}
+
+document.getElementById('closePopup').onclick = function () {
+    document.getElementById('popup').style.display = 'none';
+}
+
+// Close the popup if the user clicks outside of the popup content
+window.onclick = function (event) {
+    const popup = document.getElementById('popup');
+    if (event.target === popup) {
+        popup.style.display = 'none';
+    }
+}
+
 
 
 async function generatePassword() {
     try {
         const masterPassword = document.getElementById('masterPassword').value;
         const domain = document.getElementById('domain').value;
-        const firstName = document.getElementById('firstName').value; 
-        const lastName = document.getElementById('lastName').value; 
-        const customString = document.getElementById('customString').value; 
-        const month = document.getElementById('month').value; 
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const customString = document.getElementById('customString').value;
+        const month = document.getElementById('month').value;
         const year = document.getElementById('year').value;
         const passwordLength = parseInt(document.getElementById('passwordLength').value, 10);
 
@@ -188,11 +205,11 @@ function userFunction(domain, firstName, lastName, customString, month, year, pa
         passwordLength: passwordLength,
         enforceCharTypes: enforceCharTypes || true,
         charSet: {
-            numbers: charSet.numbers !== false,        
-            lowercase: charSet.lowercase !== false,   
-            uppercase: charSet.uppercase !== false,    
-            symbols: charSet.symbols !== false,       
-            complexSymbols: charSet.complexSymbols || false 
+            numbers: charSet.numbers !== false,
+            lowercase: charSet.lowercase !== false,
+            uppercase: charSet.uppercase !== false,
+            symbols: charSet.symbols !== false,
+            complexSymbols: charSet.complexSymbols || false
         }
     };
 }

@@ -16,6 +16,32 @@
 </head>
 
 <body>
+    <button id="openPopup" class="sticky-button">How to use it?</button>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closePopup">&times;</span>
+            <h3>How to Use the Password Manager</h3>
+            <p>
+                This password manager helps you create strong, unique passwords for each website or service, based on a
+                <strong>Master Password</strong> that only you know. The same input will always generate the same
+                password, ensuring consistency across devices without needing to store your passwords.
+            </p>
+            <ol>
+                <li>Enter your <strong>Master Password</strong> (a key only you know). This is the main password used to
+                    generate others securely.</li>
+                <li>Provide the <strong>Domain</strong> (e.g., google.com) to create a unique password for each site.
+                </li>
+                <li>Optionally, enter your <strong>First Name</strong>, <strong>Last Name</strong>, or any other
+                    information to further personalize the password.</li>
+                <li>Choose the desired <strong>Password Length</strong>.</li>
+                <li>In <strong>Customize Password</strong>, select character sets (numbers, symbols, uppercase letters,
+                    etc.) to meet specific password requirements for websites.</li>
+                <li>Click <strong>Generate</strong> to create a strong, unique password that matches your input and
+                    preferences.</li>
+            </ol>
+        </div>
+    </div>
     <div class="container">
         <div class="dark-mode-toggle">
             <span id="darkModeToggle" class="material-icons icon">nightlight</span>
@@ -24,7 +50,6 @@
             <h1 id="main-title">Forget Me</h1>
             <h2>- Password Manager</h2>
         </div>
-
         <form id="passwordManagerForm" onsubmit="return handleSubmit(event);">
             <label for="masterPassword">
                 <span class="material-icons icon">lock</span> Master Password* :
@@ -66,7 +91,7 @@
 
 
                 <label for="year">Year: (1950-2050):</label>
-                <input type="number" id="year" min="1950" max="2050" value="2024">
+                <input type="number" id="year" min="1950" max="2050" value="">
                 <label for="month">Month:</label>
                 <select id="month">
                     <option value="" disabled selected>Select Month</option>
@@ -129,14 +154,10 @@
                 title.innerHTML = 'Forget Me';
             }
         }
-    
-        // Initial call
         updateTitle();
-    
-        // Update on resize
         window.addEventListener('resize', updateTitle);
     </script>
-    
+
 </body>
 
 </html>
