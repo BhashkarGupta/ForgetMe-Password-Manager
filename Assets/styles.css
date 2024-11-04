@@ -155,6 +155,7 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     transition: background 0.3s;
+    border: solid 2px #ff7b00;
 }
 
 .result-container.dark-mode {
@@ -342,6 +343,7 @@ ol>li {
     .result-container {
         flex-direction: column;
         align-items: stretch;
+        border: solid 2px #ff7b00;
     }
 
     .result-container button {

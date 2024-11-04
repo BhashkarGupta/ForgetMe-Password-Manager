@@ -79,7 +79,6 @@ function updatePasswordStrength(password) {
         strengthProgress.className = 'progress-strong';
     }
 }
-
 // Event listener for master password input
 document.getElementById('masterPassword').addEventListener('input', (event) => {
     updatePasswordStrength(event.target.value);
@@ -88,12 +87,9 @@ document.getElementById('masterPassword').addEventListener('input', (event) => {
 document.getElementById('openPopup').onclick = function () {
     document.getElementById('popup').style.display = 'block';
 }
-
 document.getElementById('closePopup').onclick = function () {
     document.getElementById('popup').style.display = 'none';
 }
-
-// Close the popup if the user clicks outside of the popup content
 window.onclick = function (event) {
     const popup = document.getElementById('popup');
     if (event.target === popup) {
@@ -101,6 +97,12 @@ window.onclick = function (event) {
     }
 }
 
+// Copy Password
+function copyPassword() {
+    navigator.clipboard.writeText(generatedPassword.textContent).then(() => {
+        alert("Password copied to clipboard!");
+    });
+}
 
 
 async function generatePassword() {
@@ -145,13 +147,6 @@ async function generatePassword() {
         console.error(error.message);
         alert(error.message);
     }
-}
-
-// Copy Password
-function copyPassword() {
-    navigator.clipboard.writeText(generatedPassword.textContent).then(() => {
-        alert("Password copied to clipboard!");
-    });
 }
 
 // Save Config
