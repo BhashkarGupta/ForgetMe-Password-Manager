@@ -284,11 +284,18 @@ select {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+.popupMasterPassword {
+    z-index: 2;
+}
+
 ol>li {
     margin-bottom: 0.5rem;
 }
 
-.popup-content, .saved-config-popup{
+.howToPopup,
+.saved-config-popup,
+.downloadConfig,
+.uploadConfig {
     background-color: #fff;
     margin: 15% auto;
     padding: 20px;
@@ -298,7 +305,10 @@ ol>li {
     border-radius: 8px;
 }
 
-.popup-content.dark-mode, .saved-config-popup.dark-mode {
+.howToPopup.dark-mode,
+.saved-config-popup.dark-mode,
+.downloadConfig.dark-mode,
+.uploadConfig.dark-mode {
     background-color: #474747;
     border: 2px solid #54bb35;
 }

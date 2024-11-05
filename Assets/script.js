@@ -15,6 +15,46 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// Event listeners
+document.getElementById('masterPassword').addEventListener('input', (event) => {
+    updatePasswordStrength(event.target.value);
+});
+
+document.getElementById('openHowToPopup').onclick = function () {
+    document.getElementById('howToPopup').style.display = 'block';
+}
+document.getElementById('closeHowToPopup').onclick = function () {
+    document.getElementById('howToPopup').style.display = 'none';
+}
+
+document.getElementById('openDownloadConfig').onclick = function () {
+    document.getElementById('downloadConfig').style.display = 'block';
+}
+document.getElementById('closeDownloadConfig').onclick = function () {
+    document.getElementById('downloadConfig').style.display = 'none';
+}
+
+document.getElementById('openUploadConfig').onclick = function () {
+    document.getElementById('uploadConfig').style.display = 'block';
+}
+document.getElementById('closeUploadConfig').onclick = function () {
+    document.getElementById('uploadConfig').style.display = 'none';
+}
+
+document.getElementById('saved-configs').onclick = function () {
+    document.getElementById('saved-config-popup').style.display = 'block';
+    displaySavedDomains();
+}
+document.getElementById('saved-configs-close').onclick = function () {
+    document.getElementById('saved-config-popup').style.display = 'none';
+}
+window.onclick = function (event) {
+    const popup = document.getElementById('popup');
+    if (event.target === popup) {
+        popup.style.display = 'none';
+    }
+}
+
 // Toggle Advanced Options
 advancedOptionsToggle.onclick = () => {
     advancedOptions.style.display = advancedOptions.style.display === 'none' ? 'block' : 'none';
@@ -25,14 +65,15 @@ customizeOptionsToggle.onclick = () => {
     customizeOptions.style.display = customizeOptions.style.display === 'none' ? 'block' : 'none';
 };
 
-// Dark mode toggle
 const darkModeToggle = document.getElementById('darkModeToggle');
 darkModeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     document.querySelector('#generatedPassword').classList.toggle('dark-mode');
     document.querySelector('.container').classList.toggle('dark-mode');
-    document.querySelector('.popup-content').classList.toggle('dark-mode');
+    document.querySelector('.howToPopup').classList.toggle('dark-mode');
     document.querySelector('.saved-config-popup').classList.toggle('dark-mode');
+    document.querySelector('.downloadConfig').classList.toggle('dark-mode');
+    document.querySelector('.uploadConfig').classList.toggle('dark-mode');
     const labels = document.querySelectorAll('label');
     labels.forEach(label => {
         label.classList.toggle('dark-mode');
@@ -43,6 +84,20 @@ darkModeToggle.addEventListener('click', () => {
 function handleSubmit(event) {
     event.preventDefault();
     generatePassword();
+}
+
+function handleDownloadConfig(event) {
+    event.preventDefault();
+    const password = document.getElementById('passwordDownload').value;
+    saveConfig(password);
+    document.getElementById('downloadConfig').style.display = 'none';
+}
+
+function handleUploadConfig(event) {
+    event.preventDefault();
+    const password = document.getElementById('passwordUpload').value;
+    uploadConfig(password);
+    document.getElementById('uploadConfig').style.display = 'none';
 }
 
 function updatePasswordStrength(password) {
@@ -80,37 +135,26 @@ function updatePasswordStrength(password) {
         strengthProgress.className = 'progress-strong';
     }
 }
-// Event listener for master password input
-document.getElementById('masterPassword').addEventListener('input', (event) => {
-    updatePasswordStrength(event.target.value);
-});
 
-document.getElementById('openPopup').onclick = function () {
-    document.getElementById('popup').style.display = 'block';
-}
-document.getElementById('closePopup').onclick = function () {
-    document.getElementById('popup').style.display = 'none';
-}
-
-document.getElementById('saved-configs').onclick = function () {
-    document.getElementById('saved-config-popup').style.display = 'block';
-    displaySavedDomains();
-}
-document.getElementById('saved-configs-close').onclick = function () {
-    document.getElementById('saved-config-popup').style.display = 'none';
-}
-window.onclick = function (event) {
-    const popup = document.getElementById('popup');
-    if (event.target === popup) {
-        popup.style.display = 'none';
-    }
-}
-
-// Copy Password
 function copyPassword() {
     navigator.clipboard.writeText(generatedPassword.textContent).then(() => {
         alert("Password copied to clipboard!");
     });
+}
+
+function saveSiteConfiguration(userJson) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    const userJsonString = JSON.stringify(userJson);
+    const configExists = existingConfigs.some(config => JSON.stringify(config) === userJsonString);
+
+    if (configExists) {
+        console.log("This configuration already exists. Not saving again.");
+    } else {
+        existingConfigs.push(userJson);
+        localStorage.setItem('configs', JSON.stringify(existingConfigs));
+
+        console.log("New configuration saved.");
+    }
 }
 
 async function generatePassword() {
@@ -141,21 +185,6 @@ async function generatePassword() {
     } catch (error) {
         console.error(error.message);
         alert(error.message);
-    }
-}
-
-function saveSiteConfiguration(userJson) {
-    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-    const userJsonString = JSON.stringify(userJson);
-    const configExists = existingConfigs.some(config => JSON.stringify(config) === userJsonString);
-
-    if (configExists) {
-        console.log("This configuration already exists. Not saving again.");
-    } else {
-        existingConfigs.push(userJson);
-        localStorage.setItem('configs', JSON.stringify(existingConfigs));
-
-        console.log("New configuration saved.");
     }
 }
 
@@ -378,7 +407,6 @@ async function decryptData(data, masterPassword) {
     return new TextDecoder().decode(decryptedData);
 }
 
-
 async function saveConfig(masterPassword) {
     const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
     const encryptedConfigs = await encryptData(JSON.stringify(existingConfigs), masterPassword);
@@ -386,58 +414,35 @@ async function saveConfig(masterPassword) {
     const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
     const downloadLink = document.createElement("a");
     downloadLink.href = URL.createObjectURL(configBlob);
-    downloadLink.download = "AllConfigs.json";
+    downloadLink.download = "ForgetMe.json";
     downloadLink.click();
 }
 
-async function loadConfigFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+async function uploadConfig(masterPassword) {
+    const fileInput = document.getElementById('uploadFile');
+    const file = fileInput.files[0];  // Get the first file selected by the user
 
+    if (!file) {
+        console.log("No file selected");
+        return;
+    }
+
+    // Now handle the file content
     const reader = new FileReader();
     reader.onload = async function (e) {
         const encryptedData = e.target.result;
-        const masterPassword = prompt("Enter your master password to decrypt:");
-        const decryptedData = await decryptData(encryptedData, masterPassword);
-
-        const parsedConfigs = JSON.parse(decryptedData);
-        localStorage.setItem('configs', JSON.stringify(parsedConfigs));
-        displaySavedDomains(); // Update the displayed list
-    };
-    reader.readAsText(file);
-}
-// Attach load event
-document.getElementById('uploadFile').addEventListener('change', loadConfigFile);
-
-
-async function downloadConfigs(masterPassword) {
-    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-    const encryptedConfigs = await encryptData(JSON.stringify(existingConfigs), masterPassword);
-
-    const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
-    const downloadLink = document.createElement("a");
-    downloadLink.href = URL.createObjectURL(configBlob);
-    downloadLink.download = "AllConfigs.json";
-    downloadLink.click();
-}
-
-
-async function uploadConfig(event, masterPassword) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async function (e) {
-        const encryptedData = e.target.result;
+        console.log("password:", masterPassword);
+        console.log(encryptedData);
         const decryptedData = await decryptData(encryptedData, masterPassword);
 
         const parsedConfigs = JSON.parse(decryptedData);
         localStorage.setItem('configs', JSON.stringify(parsedConfigs));
         displaySavedDomains(); // Update the domain list
     };
+
+    // Read the file as text
     reader.readAsText(file);
 }
-
 
 function displaySavedDomains() {
     const domainList = document.getElementById('domainList');
@@ -449,30 +454,30 @@ function displaySavedDomains() {
         const domainName = document.createElement('span');
         domainName.textContent = config.domain;
         li.appendChild(domainName);
-    
+
         const buttonsContainer = document.createElement('div');
         buttonsContainer.classList.add('buttons-container');
-    
+
         const loadButton = document.createElement('button');
         loadButton.textContent = "Load";
-        loadButton.classList.add('domainList-button', 'load'); 
+        loadButton.classList.add('domainList-button', 'load');
         loadButton.onclick = () => loadConfig(index);
         buttonsContainer.appendChild(loadButton);
-    
+
         const deleteButton = document.createElement('button');
         deleteButton.textContent = "Delete";
-        deleteButton.classList.add('domainList-button', 'delete'); 
+        deleteButton.classList.add('domainList-button', 'delete');
         deleteButton.onclick = (e) => {
             e.stopPropagation(); // Prevent triggering loadConfig
             deleteConfig(index);
         };
         buttonsContainer.appendChild(deleteButton);
-    
+
         li.appendChild(buttonsContainer);
-            li.onclick = () => loadConfig(index);
+        li.onclick = () => loadConfig(index);
         domainList.appendChild(li);
     });
-    
+
 }
 
 function deleteConfig(index) {
@@ -501,6 +506,9 @@ function loadConfig(index) {
     document.getElementById('uppercase').checked = config.charSet.uppercase;
     document.getElementById('symbols').checked = config.charSet.symbols;
     document.getElementById('complexSymbols').checked = config.charSet.complexSymbols;
+
+    //close the popup
+    document.getElementById('saved-config-popup').style.display = 'none';
 }
 
 // Search functionality
@@ -513,37 +521,32 @@ document.getElementById('searchInput').addEventListener('input', (event) => {
     existingConfigs.forEach((config, index) => {
         if (config.domain.toLowerCase().includes(searchTerm)) {
             const li = document.createElement('li');
-        const domainName = document.createElement('span');
-        domainName.textContent = config.domain;
-        li.appendChild(domainName);
-    
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.classList.add('buttons-container');
-    
-        const loadButton = document.createElement('button');
-        loadButton.textContent = "Load";
-        loadButton.classList.add('domainList-button', 'load'); 
-        loadButton.onclick = () => loadConfig(index);
-        buttonsContainer.appendChild(loadButton);
-    
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = "Delete";
-        deleteButton.classList.add('domainList-button', 'delete'); 
-        deleteButton.onclick = (e) => {
-            e.stopPropagation(); // Prevent triggering loadConfig
-            deleteConfig(index);
-        };
-        buttonsContainer.appendChild(deleteButton);
-    
-        li.appendChild(buttonsContainer);
+            const domainName = document.createElement('span');
+            domainName.textContent = config.domain;
+            li.appendChild(domainName);
+
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.classList.add('buttons-container');
+
+            const loadButton = document.createElement('button');
+            loadButton.textContent = "Load";
+            loadButton.classList.add('domainList-button', 'load');
+            loadButton.onclick = () => loadConfig(index);
+            buttonsContainer.appendChild(loadButton);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = "Delete";
+            deleteButton.classList.add('domainList-button', 'delete');
+            deleteButton.onclick = (e) => {
+                e.stopPropagation(); // Prevent triggering loadConfig
+                deleteConfig(index);
+            };
+            buttonsContainer.appendChild(deleteButton);
+
+            li.appendChild(buttonsContainer);
             li.onclick = () => loadConfig(index);
-        domainList.appendChild(li);
+            domainList.appendChild(li);
         }
     });
 });
 
-// Attach upload event
-document.getElementById('uploadFile').addEventListener('change', (event) => {
-    const masterPassword = prompt("Enter your master password to decrypt:");
-    uploadConfig(event, masterPassword);
-});

@@ -16,10 +16,10 @@
 </head>
 
 <body>
-    <button id="openPopup" class="sticky-button">How to use it?</button>
-    <div id="popup" class="popup">
-        <div class="popup-content">
-            <span class="close" id="closePopup">&times;</span>
+    <button id="openHowToPopup" class="sticky-button">How to use it?</button>
+    <div id="howToPopup" class="popup">
+        <div class="howToPopup">
+            <span class="close" id="closeHowToPopup">&times;</span>
             <h3>How to Use the Password Manager</h3>
             <p>
                 This password manager helps you create strong, unique passwords for each website or service, based on a
@@ -145,17 +145,54 @@
                 <div class="domainList">
                     <ul id="domainList"></ul>
                 </div>
-                <input type="file" id="uploadFile" />
                 <div class="button-group">
-                    <button type="button" onclick="saveConfig()">
+                    <button id="openDownloadConfig">
                         <span class="material-icons icon">save</span> Dowload Config
                     </button>
-                    <button type="button" id="loadConfigButton">
-                        <span class="material-icons icon">folder_open</span> Load Config
+                    <button id="openUploadConfig">
+                        <span class="material-icons icon">folder_open</span> Upload Config
                     </button>
                 </div>
             </div>
         </div>
+
+        <div id="downloadConfig" class="popup popupMasterPassword">
+            <div class="downloadConfig">
+                <span class="close" id="closeDownloadConfig">&times;</span>
+                <h3>Please Enter Your Master Password for Encryption</h3>
+                <form id="passwordManagerDownload" onsubmit="handleDownloadConfig(event);">
+                    <label for="passwordDownload">
+                        <span class="material-icons icon">lock</span> Master Password* :
+                    </label>
+                    <input type="password" id="passwordDownload" required>
+                    <div class="button-group">
+                        <button type="submit">
+                            <span class="material-icons icon">vpn_key</span> Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="uploadConfig" class="popup popupMasterPassword">
+            <div class="uploadConfig">
+                <span class="close" id="closeUploadConfig">&times;</span>
+                <h3>Please Enter Your Master Password for Encryption</h3>
+                <form id="passwordManagerUpload" onsubmit="handleUploadConfig(event);">
+                    <label for="passwordUpload">
+                        <span class="material-icons icon">lock</span> Master Password* :
+                    </label>
+                    <input type="password" id="passwordUpload" required>
+                    <input type="file" id="uploadFile" required />
+                    <div class="button-group">
+                        <button type="submit">
+                            <span class="material-icons icon">vpn_key</span> Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
     </div>
 
     <script src="Assets/script.js"></script>
