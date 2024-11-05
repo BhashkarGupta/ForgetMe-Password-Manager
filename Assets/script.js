@@ -32,6 +32,7 @@ darkModeToggle.addEventListener('click', () => {
     document.querySelector('#generatedPassword').classList.toggle('dark-mode');
     document.querySelector('.container').classList.toggle('dark-mode');
     document.querySelector('.popup-content').classList.toggle('dark-mode');
+    document.querySelector('.saved-config-popup').classList.toggle('dark-mode');
     const labels = document.querySelectorAll('label');
     labels.forEach(label => {
         label.classList.toggle('dark-mode');
@@ -90,6 +91,14 @@ document.getElementById('openPopup').onclick = function () {
 document.getElementById('closePopup').onclick = function () {
     document.getElementById('popup').style.display = 'none';
 }
+
+document.getElementById('saved-configs').onclick = function () {
+    document.getElementById('saved-config-popup').style.display = 'block';
+    displaySavedDomains();
+}
+document.getElementById('saved-configs-close').onclick = function () {
+    document.getElementById('saved-config-popup').style.display = 'none';
+}
 window.onclick = function (event) {
     const popup = document.getElementById('popup');
     if (event.target === popup) {
@@ -104,7 +113,6 @@ function copyPassword() {
     });
 }
 
-
 async function generatePassword() {
     try {
         const masterPassword = document.getElementById('masterPassword').value;
@@ -116,68 +124,39 @@ async function generatePassword() {
         const year = document.getElementById('year').value;
         const passwordLength = parseInt(document.getElementById('passwordLength').value, 10);
 
-        console.log(masterPassword, domain, firstName, lastName, customString, month, year);
+        const userJson = userFunction(domain, firstName, lastName, customString, month, year, passwordLength, {
+            numbers: document.getElementById('numbers').checked,
+            lowercase: document.getElementById('lowercase').checked,
+            uppercase: document.getElementById('uppercase').checked,
+            symbols: document.getElementById('symbols').checked,
+            complexSymbols: document.getElementById('complexSymbols').checked
+        }, document.getElementById('enforceSelection').checked);
 
-        const userJson = userFunction(
-            domain,
-            firstName,
-            lastName,
-            customString,
-            month,
-            year,
-            passwordLength,
-            {
-                numbers: document.getElementById('numbers').checked,
-                lowercase: document.getElementById('lowercase').checked,
-                uppercase: document.getElementById('uppercase').checked,
-                symbols: document.getElementById('symbols').checked,
-                complexSymbols: document.getElementById('complexSymbols').checked
-            },
-            document.getElementById('enforceSelection').checked
-        );
-        console.log(document.getElementById('enforceSelection').checked, document.getElementById('numbers').checked, document.getElementById('lowercase').checked, document.getElementById('uppercase').checked, document.getElementById('symbols').checked, document.getElementById('complexSymbols').checked);
-        console.log(userJson.charSet);
-        const finalJson = generateUserString(userJson);
-        // console.log(finalJson);
-        const password = await generatePasswordFromHash(masterPassword, finalJson);
-        console.log(password);
+        const password = await generatePasswordFromHash(masterPassword, generateUserString(userJson));
 
         generatedPassword.textContent = password;
+
+        saveSiteConfiguration(userJson);
+
     } catch (error) {
         console.error(error.message);
         alert(error.message);
     }
 }
 
-// Save Config
-function saveConfig() {
-    const config = {
-        domain: domain.value,
-        firstName: firstName.value,
-        lastName: lastName.value,
-        customString: customString.value,
-        month: month.value,
-        year: year.value,
-        passwordLength: passwordLength.value,
-        enforceCharTypes: document.getElementById('enforceSelection').checked,
-        charSet:{
-            numbers: document.getElementById('numbers').checked,
-            lowercase: document.getElementById('lowercase').checked,
-            uppercase: document.getElementById('uppercase').checked,
-            symbols: document.getElementById('symbols').checked,
-            complexSymbols: document.getElementById('complexSymbols').checked
-        }
-    };
-    const configBlob = new Blob([JSON.stringify(config)], { type: "application/json" });
-    const downloadLink = document.createElement("a");
-    downloadLink.href = URL.createObjectURL(configBlob);
-    downloadLink.download = "ForgetMe.json";
-    downloadLink.click();
-}
+function saveSiteConfiguration(userJson) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    const userJsonString = JSON.stringify(userJson);
+    const configExists = existingConfigs.some(config => JSON.stringify(config) === userJsonString);
 
-// Load Config
-function loadConfig() {
-    alert("On it's way, I'm still working on it!");
+    if (configExists) {
+        console.log("This configuration already exists. Not saving again.");
+    } else {
+        existingConfigs.push(userJson);
+        localStorage.setItem('configs', JSON.stringify(existingConfigs));
+
+        console.log("New configuration saved.");
+    }
 }
 
 // 1. User Function: Generates the initial JSON structure
@@ -337,3 +316,234 @@ async function generatePasswordFromHash(masterPassword, finalJson) {
 
     return password;
 }
+
+
+async function encryptData(data, masterPassword) {
+    const encoder = new TextEncoder();
+    const masterPasswordHash = await crypto.subtle.digest('SHA-256', encoder.encode(masterPassword));
+    const halfHash = masterPasswordHash.slice(0, masterPasswordHash.byteLength / 2);
+
+    const iv = crypto.getRandomValues(new Uint8Array(12)); // Initialization vector
+    const key = await crypto.subtle.importKey(
+        'raw',
+        halfHash,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt']
+    );
+
+    const encryptedData = await crypto.subtle.encrypt(
+        {
+            name: 'AES-GCM',
+            iv: iv
+        },
+        key,
+        encoder.encode(data)
+    );
+
+    // Combine iv and encrypted data for storage
+    const combined = new Uint8Array(iv.byteLength + encryptedData.byteLength);
+    combined.set(iv);
+    combined.set(new Uint8Array(encryptedData), iv.byteLength);
+
+    return btoa(String.fromCharCode(...combined)); // Convert to base64 for storage
+}
+
+async function decryptData(data, masterPassword) {
+    const combined = new Uint8Array(atob(data).split("").map(c => c.charCodeAt(0)));
+    const iv = combined.slice(0, 12); // Extract the IV
+    const encryptedData = combined.slice(12); // Extract the encrypted data
+
+    const encoder = new TextEncoder();
+    const masterPasswordHash = await crypto.subtle.digest('SHA-256', encoder.encode(masterPassword));
+    const halfHash = masterPasswordHash.slice(0, masterPasswordHash.byteLength / 2);
+
+    const key = await crypto.subtle.importKey(
+        'raw',
+        halfHash,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt']
+    );
+
+    const decryptedData = await crypto.subtle.decrypt(
+        {
+            name: 'AES-GCM',
+            iv: iv
+        },
+        key,
+        encryptedData
+    );
+
+    return new TextDecoder().decode(decryptedData);
+}
+
+
+async function saveConfig(masterPassword) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    const encryptedConfigs = await encryptData(JSON.stringify(existingConfigs), masterPassword);
+
+    const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(configBlob);
+    downloadLink.download = "AllConfigs.json";
+    downloadLink.click();
+}
+
+async function loadConfigFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async function (e) {
+        const encryptedData = e.target.result;
+        const masterPassword = prompt("Enter your master password to decrypt:");
+        const decryptedData = await decryptData(encryptedData, masterPassword);
+
+        const parsedConfigs = JSON.parse(decryptedData);
+        localStorage.setItem('configs', JSON.stringify(parsedConfigs));
+        displaySavedDomains(); // Update the displayed list
+    };
+    reader.readAsText(file);
+}
+// Attach load event
+document.getElementById('uploadFile').addEventListener('change', loadConfigFile);
+
+
+async function downloadConfigs(masterPassword) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    const encryptedConfigs = await encryptData(JSON.stringify(existingConfigs), masterPassword);
+
+    const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(configBlob);
+    downloadLink.download = "AllConfigs.json";
+    downloadLink.click();
+}
+
+
+async function uploadConfig(event, masterPassword) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async function (e) {
+        const encryptedData = e.target.result;
+        const decryptedData = await decryptData(encryptedData, masterPassword);
+
+        const parsedConfigs = JSON.parse(decryptedData);
+        localStorage.setItem('configs', JSON.stringify(parsedConfigs));
+        displaySavedDomains(); // Update the domain list
+    };
+    reader.readAsText(file);
+}
+
+
+function displaySavedDomains() {
+    const domainList = document.getElementById('domainList');
+    domainList.innerHTML = ''; // Clear previous entries
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+
+    existingConfigs.forEach((config, index) => {
+        const li = document.createElement('li');
+        const domainName = document.createElement('span');
+        domainName.textContent = config.domain;
+        li.appendChild(domainName);
+    
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('buttons-container');
+    
+        const loadButton = document.createElement('button');
+        loadButton.textContent = "Load";
+        loadButton.classList.add('domainList-button', 'load'); 
+        loadButton.onclick = () => loadConfig(index);
+        buttonsContainer.appendChild(loadButton);
+    
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "Delete";
+        deleteButton.classList.add('domainList-button', 'delete'); 
+        deleteButton.onclick = (e) => {
+            e.stopPropagation(); // Prevent triggering loadConfig
+            deleteConfig(index);
+        };
+        buttonsContainer.appendChild(deleteButton);
+    
+        li.appendChild(buttonsContainer);
+            li.onclick = () => loadConfig(index);
+        domainList.appendChild(li);
+    });
+    
+}
+
+function deleteConfig(index) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    existingConfigs.splice(index, 1);
+    localStorage.setItem('configs', JSON.stringify(existingConfigs));
+    displaySavedDomains();
+}
+
+function loadConfig(index) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    const config = existingConfigs[index];
+
+    // Load the configuration into the input fields
+    document.getElementById('domain').value = config.domain;
+    document.getElementById('firstName').value = config.firstName;
+    document.getElementById('lastName').value = config.lastName;
+    document.getElementById('customString').value = config.customString;
+    document.getElementById('month').value = config.month;
+    document.getElementById('year').value = config.year;
+    document.getElementById('passwordLength').value = config.passwordLength;
+    document.getElementById('enforceSelection').checked = config.enforceCharTypes;
+
+    document.getElementById('numbers').checked = config.charSet.numbers;
+    document.getElementById('lowercase').checked = config.charSet.lowercase;
+    document.getElementById('uppercase').checked = config.charSet.uppercase;
+    document.getElementById('symbols').checked = config.charSet.symbols;
+    document.getElementById('complexSymbols').checked = config.charSet.complexSymbols;
+}
+
+// Search functionality
+document.getElementById('searchInput').addEventListener('input', (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    const domainList = document.getElementById('domainList');
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+
+    domainList.innerHTML = ''; // Clear previous entries
+    existingConfigs.forEach((config, index) => {
+        if (config.domain.toLowerCase().includes(searchTerm)) {
+            const li = document.createElement('li');
+        const domainName = document.createElement('span');
+        domainName.textContent = config.domain;
+        li.appendChild(domainName);
+    
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('buttons-container');
+    
+        const loadButton = document.createElement('button');
+        loadButton.textContent = "Load";
+        loadButton.classList.add('domainList-button', 'load'); 
+        loadButton.onclick = () => loadConfig(index);
+        buttonsContainer.appendChild(loadButton);
+    
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "Delete";
+        deleteButton.classList.add('domainList-button', 'delete'); 
+        deleteButton.onclick = (e) => {
+            e.stopPropagation(); // Prevent triggering loadConfig
+            deleteConfig(index);
+        };
+        buttonsContainer.appendChild(deleteButton);
+    
+        li.appendChild(buttonsContainer);
+            li.onclick = () => loadConfig(index);
+        domainList.appendChild(li);
+        }
+    });
+});
+
+// Attach upload event
+document.getElementById('uploadFile').addEventListener('change', (event) => {
+    const masterPassword = prompt("Enter your master password to decrypt:");
+    uploadConfig(event, masterPassword);
+});

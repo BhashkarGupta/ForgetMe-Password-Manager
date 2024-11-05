@@ -17,7 +17,6 @@
 
 <body>
     <button id="openPopup" class="sticky-button">How to use it?</button>
-
     <div id="popup" class="popup">
         <div class="popup-content">
             <span class="close" id="closePopup">&times;</span>
@@ -42,6 +41,7 @@
             </ol>
         </div>
     </div>
+
     <div class="container">
         <div class="dark-mode-toggle">
             <span id="darkModeToggle" class="material-icons icon">nightlight</span>
@@ -87,9 +87,6 @@
                 <label for="customString">Custom String:</label>
                 <input type="text" id="customString">
 
-
-
-
                 <label for="year">Year: (1950-2050):</label>
                 <input type="number" id="year" min="1950" max="2050" value="">
                 <label for="month">Month:</label>
@@ -134,14 +131,31 @@
                 <button type="submit">
                     <span class="material-icons icon">vpn_key</span> Generate
                 </button>
-                <button type="button" onclick="saveConfig()">
-                    <span class="material-icons icon">save</span> Save Config
-                </button>
-                <button type="button" onclick="loadConfig()">
-                    <span class="material-icons icon">folder_open</span> Load Config
+                <button id="saved-configs">
+                    <span class="material-icons icon">save</span>Saved Configs
                 </button>
             </div>
         </form>
+
+        <div id="saved-config-popup" class="popup">
+            <div class="saved-config-popup">
+                <span class="close" id="saved-configs-close">&times;</span>
+                <h3>Previously Saved Configurations</h3>
+                <input type="text" id="searchInput" placeholder="Search domains..." />
+                <div class="domainList">
+                    <ul id="domainList"></ul>
+                </div>
+                <input type="file" id="uploadFile" />
+                <div class="button-group">
+                    <button type="button" onclick="saveConfig()">
+                        <span class="material-icons icon">save</span> Dowload Config
+                    </button>
+                    <button type="button" id="loadConfigButton">
+                        <span class="material-icons icon">folder_open</span> Load Config
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="Assets/script.js"></script>
