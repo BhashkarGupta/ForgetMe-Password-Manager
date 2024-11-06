@@ -50,9 +50,16 @@
             <h1 id="main-title">Forget Me</h1>
             <h2>- Password Manager</h2>
         </div>
+
         <form id="passwordManagerForm" onsubmit="return handleSubmit(event);">
             <label for="masterPassword">
-                <span class="material-icons icon">lock</span> Master Password* :
+                <span><span class="material-icons icon">lock</span> Master Password* :</span>
+                <div class="hint-container">
+                    <i class="material-icons icon">info</i>
+                    <div class="info-box howToPopup" id="passwordInfo">
+                        This is the master password or main password which will be use to generate the other passwords.It is advisable to use a complex password for this. Please make sure you keep is secret. 
+                    </div>
+                </div>
             </label>
             <input type="password" id="masterPassword" required>
             <div class="password-strength-container">
@@ -61,11 +68,17 @@
             </div>
 
             <label for="domain">
-                <span class="material-icons icon">language</span> Domain* : (eg:google.com)
+                <span><span class="material-icons icon">language</span> Domain* : (eg:google.com)</span>
+                <div class="hint-container">
+                    <i class="material-icons icon">info</i>
+                    <div class="info-box howToPopup" id="domainInfo">
+                        In general, it is advisable to use the domain or service name of the website to remember it easily. But you can also use any other name which remind you of the website or service to make this more unique to you.
+                    </div>
+                </div>
             </label>
             <input type="text" id="domain" required>
 
-            <label for="firstName">First Name:</label>
+            <label for="firstName">Username (optional):</label>
             <input type="text" id="firstName">
 
             <label for="passwordLength">Password Length (4-40):</label>

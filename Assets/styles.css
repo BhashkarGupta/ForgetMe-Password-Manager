@@ -66,7 +66,9 @@ label {
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
     color: #555;
-    display: block;
+    /* display: block; */
+    display: flex;
+    justify-content: space-between;
 }
 
 label.dark-mode {
@@ -303,6 +305,7 @@ ol>li {
     min-width: 300px;
     max-width: 550px;
     border-radius: 8px;
+    color: #444;
 }
 
 .howToPopup.dark-mode,
@@ -311,6 +314,7 @@ ol>li {
 .uploadConfig.dark-mode {
     background-color: #474747;
     border: 2px solid #54bb35;
+    color: #ffffff;
 }
 
 .close {
@@ -407,6 +411,48 @@ ol>li {
 .domainList-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+
+/* Basic styling for the container */
+.hint-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Styling the "i" button */
+.info-toggle {
+    border: none;
+    cursor: pointer;
+    min-width: fit-content;
+    margin: 0;
+    padding: 0;
+    size: 18px;
+}
+
+/* Initially hide the info box */
+.info-box {
+    visibility: hidden;
+    position: absolute;
+    top: 40px;  /* Distance from button */
+    right: 0;
+    /* background-color: #f1f1f1;
+    color: #333; */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+    z-index: 5;
+}
+
+/* Show the info box when hovering over the button */
+.hint-container:hover .info-box {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
 
 
