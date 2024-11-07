@@ -70,7 +70,7 @@ darkModeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     document.querySelector('#generatedPassword').classList.toggle('dark-mode');
     document.querySelector('.container').classList.toggle('dark-mode');
-    document.querySelector('.howToPopup').classList.toggle('dark-mode');
+    document.querySelector('select').classList.toggle('dark-mode');
     document.querySelector('.saved-config-popup').classList.toggle('dark-mode');
     document.querySelector('.downloadConfig').classList.toggle('dark-mode');
     document.querySelector('.uploadConfig').classList.toggle('dark-mode');
@@ -78,7 +78,15 @@ darkModeToggle.addEventListener('click', () => {
     labels.forEach(label => {
         label.classList.toggle('dark-mode');
     });
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.classList.toggle('dark-mode');
+    });
     darkModeToggle.classList.toggle('active');
+    const popups = document.querySelectorAll('.howToPopup');
+    popups.forEach(popup => {
+        popup.classList.toggle('dark-mode');
+    })
 });
 
 function handleSubmit(event) {
