@@ -416,7 +416,6 @@ ol>li {
     color: white;
 }
 
-/* Disabled button */
 .domainList-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;

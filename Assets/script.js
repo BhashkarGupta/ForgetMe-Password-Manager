@@ -435,7 +435,7 @@ async function uploadConfig(masterPassword) {
         return;
     }
 
-    // Now handle the file content
+    // handle the file content
     const reader = new FileReader();
     reader.onload = async function (e) {
         const encryptedData = e.target.result;
@@ -448,7 +448,7 @@ async function uploadConfig(masterPassword) {
         displaySavedDomains(); // Update the domain list
     };
 
-    // Read the file as text
+    // Reading the file as text
     reader.readAsText(file);
 }
 
