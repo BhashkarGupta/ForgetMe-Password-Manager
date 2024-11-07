@@ -169,14 +169,14 @@ async function generatePassword() {
     try {
         const masterPassword = document.getElementById('masterPassword').value;
         const domain = document.getElementById('domain').value;
-        const firstName = document.getElementById('firstName').value;
-        const lastName = document.getElementById('lastName').value;
+        const username = document.getElementById('username').value;
+        const name = document.getElementById('name').value;
         const customString = document.getElementById('customString').value;
         const month = document.getElementById('month').value;
         const year = document.getElementById('year').value;
         const passwordLength = parseInt(document.getElementById('passwordLength').value, 10);
 
-        const userJson = userFunction(domain, firstName, lastName, customString, month, year, passwordLength, {
+        const userJson = userFunction(domain, username, name, customString, month, year, passwordLength, {
             numbers: document.getElementById('numbers').checked,
             lowercase: document.getElementById('lowercase').checked,
             uppercase: document.getElementById('uppercase').checked,
@@ -197,7 +197,7 @@ async function generatePassword() {
 }
 
 // 1. User Function: Generates the initial JSON structure
-function userFunction(domain, firstName, lastName, customString, month, year, passwordLength, charSet, enforceCharTypes) {
+function userFunction(domain, username, name, customString, month, year, passwordLength, charSet, enforceCharTypes) {
     if (!charSet.numbers && !charSet.lowercase && !charSet.uppercase && !charSet.symbols && !charSet.complexSymbols) {
         throw new Error("At least one character set must be selected.");
     }
@@ -210,8 +210,8 @@ function userFunction(domain, firstName, lastName, customString, month, year, pa
 
     return {
         domain: domain,
-        firstName: firstName || null,
-        lastName: lastName || null,
+        username: username || null,
+        name: name || null,
         customString: customString || null,
         month: month || null,
         year: year || null,
@@ -232,8 +232,8 @@ function generateUserString(userJson) {
     let combinedString = "";
 
     if (userJson.domain) combinedString += userJson.domain;
-    if (userJson.firstName) combinedString += userJson.firstName;
-    if (userJson.lastName) combinedString += userJson.lastName;
+    if (userJson.username) combinedString += userJson.username;
+    if (userJson.name) combinedString += userJson.name;
     if (userJson.customString) combinedString += userJson.customString;
     if (userJson.month) combinedString += userJson.month;
     if (userJson.year) combinedString += userJson.year;
@@ -422,7 +422,7 @@ async function saveConfig(masterPassword) {
     const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
     const downloadLink = document.createElement("a");
     downloadLink.href = URL.createObjectURL(configBlob);
-    downloadLink.download = "ForgetMe.json";
+    downloadLink.download = "ForgetMe.fmpm";
     downloadLink.click();
 }
 
@@ -501,8 +501,8 @@ function loadConfig(index) {
 
     // Load the configuration into the input fields
     document.getElementById('domain').value = config.domain;
-    document.getElementById('firstName').value = config.firstName;
-    document.getElementById('lastName').value = config.lastName;
+    document.getElementById('username').value = config.username;
+    document.getElementById('name').value = config.name;
     document.getElementById('customString').value = config.customString;
     document.getElementById('month').value = config.month;
     document.getElementById('year').value = config.year;
