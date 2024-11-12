@@ -333,22 +333,23 @@ function userFunction(domain, username, name, customString, month, year, passwor
     }
 
     return {
-        domain: domain,
-        username: username || null,
-        name: name || null,
-        customString: customString || null,
-        month: month || null,
-        year: year || null,
-        passwordLength: passwordLength,
-        enforceCharTypes: enforceCharTypes || true,
         charSet: {
-            numbers: charSet.numbers !== false,
+            complexSymbols: charSet.complexSymbols || false,
             lowercase: charSet.lowercase !== false,
-            uppercase: charSet.uppercase !== false,
+            numbers: charSet.numbers !== false,
             symbols: charSet.symbols !== false,
-            complexSymbols: charSet.complexSymbols || false
-        }
+            uppercase: charSet.uppercase !== false
+        },
+        customString: customString || null,
+        domain: domain,
+        enforceCharTypes: enforceCharTypes || true,
+        month: month || null,
+        name: name || null,
+        passwordLength: passwordLength,
+        username: username || null,
+        year: year || null
     };
+    
 }
 
 // 2. Generate User String Function: Combines the relevant fields into one string
