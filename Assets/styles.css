@@ -10,10 +10,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     transition: background 0.3s, color 0.3s;
     position: relative;
+    overflow: auto; 
 }
 
 body.dark-mode {

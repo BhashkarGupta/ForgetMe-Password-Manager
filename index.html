@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Pompiere&family=Ribeye+Marrow&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="Assets/styles.css">
-    <link rel="manifest" href="https://raw.githubusercontent.com/BhashkarGupta/ForgetMe-Password-Manager/refs/heads/master/manifest.json">
     <link rel="icon" href="./Assets/favicon24.png" type="image/png">
 </head>
 
@@ -174,12 +173,12 @@
                 <h3>Please Enter Your Master Password for Encryption</h3>
                 <form id="passwordManagerDownload" onsubmit="handleDownloadConfig(event);">
                     <label for="passwordDownload">
-                        <span class="material-icons icon">lock</span> Master Password* :
+                        <span><span class="material-icons icon">lock</span> Master Password* :</span>
                     </label>
                     <input type="password" id="passwordDownload" required>
                     <div class="button-group">
                         <button type="submit">
-                            <span class="material-icons icon">vpn_key</span> Submit
+                            <span class="material-icons icon">download</span> Download
                         </button>
                     </div>
                 </form>
@@ -189,16 +188,16 @@
         <div id="uploadConfig" class="popup popupMasterPassword">
             <div class="uploadConfig">
                 <span class="close" id="closeUploadConfig">&times;</span>
-                <h3>Please Enter Your Master Password for Encryption</h3>
+                <h3>Please Enter Your Master Password for Decryption</h3>
                 <form id="passwordManagerUpload" onsubmit="handleUploadConfig(event);">
                     <label for="passwordUpload">
-                        <span class="material-icons icon">lock</span> Master Password* :
+                        <span><span class="material-icons icon">lock</span> Master Password* :</span>
                     </label>
                     <input type="password" id="passwordUpload" required>
                     <input type="file" id="uploadFile" accept=".fmpm" required />
                     <div class="button-group">
                         <button type="submit">
-                            <span class="material-icons icon">vpn_key</span> Submit
+                            <span class="material-icons icon">upload</span> Upload
                         </button>
                     </div>
                 </form>

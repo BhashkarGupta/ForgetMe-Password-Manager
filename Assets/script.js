@@ -7,14 +7,6 @@ const customizeOptionsToggle = document.getElementById('customizeOptionsToggle')
 const customizeOptions = document.getElementById('customizeOptions');
 const generatedPassword = document.getElementById('generatedPassword');
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('https://raw.githubusercontent.com/BhashkarGupta/ForgetMe-Password-Manager/refs/heads/master/service-worker.js')
-            .then(reg => console.log('Service Worker registered:', reg))
-            .catch(err => console.warn('Service Worker registration failed:', err));
-    });
-}
-
 // Event listeners
 document.getElementById('masterPassword').addEventListener('input', (event) => {
     updatePasswordStrength(event.target.value);
@@ -150,20 +142,148 @@ function copyPassword() {
     });
 }
 
-function saveSiteConfiguration(userJson) {
+async function saveConfig(masterPassword) {
     const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-    const userJsonString = JSON.stringify(userJson);
-    const configExists = existingConfigs.some(config => JSON.stringify(config) === userJsonString);
+    const encryptedConfigs = await encryptData(JSON.stringify(existingConfigs), masterPassword);
 
-    if (configExists) {
-        console.log("This configuration already exists. Not saving again.");
-    } else {
-        existingConfigs.push(userJson);
-        localStorage.setItem('configs', JSON.stringify(existingConfigs));
-
-        console.log("New configuration saved.");
-    }
+    const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(configBlob);
+    downloadLink.download = "ForgetMe.fmpm";
+    downloadLink.click();
 }
+
+async function uploadConfig(masterPassword) {
+    const fileInput = document.getElementById('uploadFile');
+    const file = fileInput.files[0];  // Get the first file selected by the user
+
+    if (!file) {
+        console.log("No file selected");
+        return;
+    }
+
+    // handle the file content
+    const reader = new FileReader();
+    reader.onload = async function (e) {
+        const encryptedData = e.target.result;
+        console.log("password:", masterPassword);
+        console.log(encryptedData);
+        const decryptedData = await decryptData(encryptedData, masterPassword);
+
+        const parsedConfigs = JSON.parse(decryptedData);
+        localStorage.setItem('configs', JSON.stringify(parsedConfigs));
+        displaySavedDomains(); // Update the domain list
+    };
+
+    // Reading the file as text
+    reader.readAsText(file);
+}
+
+function displaySavedDomains() {
+    const domainList = document.getElementById('domainList');
+    domainList.innerHTML = ''; // Clear previous entries
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+
+    existingConfigs.forEach((config, index) => {
+        const li = document.createElement('li');
+        const domainName = document.createElement('span');
+        domainName.textContent = config.domain;
+        li.appendChild(domainName);
+
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('buttons-container');
+
+        const loadButton = document.createElement('button');
+        loadButton.textContent = "Load";
+        loadButton.classList.add('domainList-button', 'load');
+        loadButton.onclick = () => loadConfig(index);
+        buttonsContainer.appendChild(loadButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "Delete";
+        deleteButton.classList.add('domainList-button', 'delete');
+        deleteButton.onclick = (e) => {
+            e.stopPropagation(); // Prevent triggering loadConfig
+            deleteConfig(index);
+        };
+        buttonsContainer.appendChild(deleteButton);
+
+        li.appendChild(buttonsContainer);
+        li.onclick = () => loadConfig(index);
+        domainList.appendChild(li);
+    });
+
+}
+
+function deleteConfig(index) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    existingConfigs.splice(index, 1);
+    localStorage.setItem('configs', JSON.stringify(existingConfigs));
+    displaySavedDomains();
+}
+
+function loadConfig(index) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    const config = existingConfigs[index];
+
+    // Load the configuration into the input fields
+    document.getElementById('domain').value = config.domain;
+    document.getElementById('username').value = config.username;
+    document.getElementById('name').value = config.name;
+    document.getElementById('customString').value = config.customString;
+    document.getElementById('month').value = config.month;
+    document.getElementById('year').value = config.year;
+    document.getElementById('passwordLength').value = config.passwordLength;
+    document.getElementById('enforceSelection').checked = config.enforceCharTypes;
+
+    document.getElementById('numbers').checked = config.charSet.numbers;
+    document.getElementById('lowercase').checked = config.charSet.lowercase;
+    document.getElementById('uppercase').checked = config.charSet.uppercase;
+    document.getElementById('symbols').checked = config.charSet.symbols;
+    document.getElementById('complexSymbols').checked = config.charSet.complexSymbols;
+
+    //close the popup
+    document.getElementById('saved-config-popup').style.display = 'none';
+}
+
+// Search functionality
+document.getElementById('searchInput').addEventListener('input', (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    const domainList = document.getElementById('domainList');
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+
+    domainList.innerHTML = ''; // Clear previous entries
+    existingConfigs.forEach((config, index) => {
+        if (config.domain.toLowerCase().includes(searchTerm)) {
+            const li = document.createElement('li');
+            const domainName = document.createElement('span');
+            domainName.textContent = config.domain;
+            li.appendChild(domainName);
+
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.classList.add('buttons-container');
+
+            const loadButton = document.createElement('button');
+            loadButton.textContent = "Load";
+            loadButton.classList.add('domainList-button', 'load');
+            loadButton.onclick = () => loadConfig(index);
+            buttonsContainer.appendChild(loadButton);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = "Delete";
+            deleteButton.classList.add('domainList-button', 'delete');
+            deleteButton.onclick = (e) => {
+                e.stopPropagation(); // Prevent triggering loadConfig
+                deleteConfig(index);
+            };
+            buttonsContainer.appendChild(deleteButton);
+
+            li.appendChild(buttonsContainer);
+            li.onclick = () => loadConfig(index);
+            domainList.appendChild(li);
+        }
+    });
+});
 
 async function generatePassword() {
     try {
@@ -354,6 +474,20 @@ async function generatePasswordFromHash(masterPassword, finalJson) {
     return password;
 }
 
+function saveSiteConfiguration(userJson) {
+    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    const userJsonString = JSON.stringify(userJson);
+    const configExists = existingConfigs.some(config => JSON.stringify(config) === userJsonString);
+
+    if (configExists) {
+        console.log("This configuration already exists. Not saving again.");
+    } else {
+        existingConfigs.push(userJson);
+        localStorage.setItem('configs', JSON.stringify(existingConfigs));
+
+        console.log("New configuration saved.");
+    }
+}
 
 async function encryptData(data, masterPassword) {
     const encoder = new TextEncoder();
@@ -414,147 +548,3 @@ async function decryptData(data, masterPassword) {
 
     return new TextDecoder().decode(decryptedData);
 }
-
-async function saveConfig(masterPassword) {
-    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-    const encryptedConfigs = await encryptData(JSON.stringify(existingConfigs), masterPassword);
-
-    const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
-    const downloadLink = document.createElement("a");
-    downloadLink.href = URL.createObjectURL(configBlob);
-    downloadLink.download = "ForgetMe.fmpm";
-    downloadLink.click();
-}
-
-async function uploadConfig(masterPassword) {
-    const fileInput = document.getElementById('uploadFile');
-    const file = fileInput.files[0];  // Get the first file selected by the user
-
-    if (!file) {
-        console.log("No file selected");
-        return;
-    }
-
-    // handle the file content
-    const reader = new FileReader();
-    reader.onload = async function (e) {
-        const encryptedData = e.target.result;
-        console.log("password:", masterPassword);
-        console.log(encryptedData);
-        const decryptedData = await decryptData(encryptedData, masterPassword);
-
-        const parsedConfigs = JSON.parse(decryptedData);
-        localStorage.setItem('configs', JSON.stringify(parsedConfigs));
-        displaySavedDomains(); // Update the domain list
-    };
-
-    // Reading the file as text
-    reader.readAsText(file);
-}
-
-function displaySavedDomains() {
-    const domainList = document.getElementById('domainList');
-    domainList.innerHTML = ''; // Clear previous entries
-    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-
-    existingConfigs.forEach((config, index) => {
-        const li = document.createElement('li');
-        const domainName = document.createElement('span');
-        domainName.textContent = config.domain;
-        li.appendChild(domainName);
-
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.classList.add('buttons-container');
-
-        const loadButton = document.createElement('button');
-        loadButton.textContent = "Load";
-        loadButton.classList.add('domainList-button', 'load');
-        loadButton.onclick = () => loadConfig(index);
-        buttonsContainer.appendChild(loadButton);
-
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = "Delete";
-        deleteButton.classList.add('domainList-button', 'delete');
-        deleteButton.onclick = (e) => {
-            e.stopPropagation(); // Prevent triggering loadConfig
-            deleteConfig(index);
-        };
-        buttonsContainer.appendChild(deleteButton);
-
-        li.appendChild(buttonsContainer);
-        li.onclick = () => loadConfig(index);
-        domainList.appendChild(li);
-    });
-
-}
-
-function deleteConfig(index) {
-    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-    existingConfigs.splice(index, 1);
-    localStorage.setItem('configs', JSON.stringify(existingConfigs));
-    displaySavedDomains();
-}
-
-function loadConfig(index) {
-    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-    const config = existingConfigs[index];
-
-    // Load the configuration into the input fields
-    document.getElementById('domain').value = config.domain;
-    document.getElementById('username').value = config.username;
-    document.getElementById('name').value = config.name;
-    document.getElementById('customString').value = config.customString;
-    document.getElementById('month').value = config.month;
-    document.getElementById('year').value = config.year;
-    document.getElementById('passwordLength').value = config.passwordLength;
-    document.getElementById('enforceSelection').checked = config.enforceCharTypes;
-
-    document.getElementById('numbers').checked = config.charSet.numbers;
-    document.getElementById('lowercase').checked = config.charSet.lowercase;
-    document.getElementById('uppercase').checked = config.charSet.uppercase;
-    document.getElementById('symbols').checked = config.charSet.symbols;
-    document.getElementById('complexSymbols').checked = config.charSet.complexSymbols;
-
-    //close the popup
-    document.getElementById('saved-config-popup').style.display = 'none';
-}
-
-// Search functionality
-document.getElementById('searchInput').addEventListener('input', (event) => {
-    const searchTerm = event.target.value.toLowerCase();
-    const domainList = document.getElementById('domainList');
-    const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-
-    domainList.innerHTML = ''; // Clear previous entries
-    existingConfigs.forEach((config, index) => {
-        if (config.domain.toLowerCase().includes(searchTerm)) {
-            const li = document.createElement('li');
-            const domainName = document.createElement('span');
-            domainName.textContent = config.domain;
-            li.appendChild(domainName);
-
-            const buttonsContainer = document.createElement('div');
-            buttonsContainer.classList.add('buttons-container');
-
-            const loadButton = document.createElement('button');
-            loadButton.textContent = "Load";
-            loadButton.classList.add('domainList-button', 'load');
-            loadButton.onclick = () => loadConfig(index);
-            buttonsContainer.appendChild(loadButton);
-
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = "Delete";
-            deleteButton.classList.add('domainList-button', 'delete');
-            deleteButton.onclick = (e) => {
-                e.stopPropagation(); // Prevent triggering loadConfig
-                deleteConfig(index);
-            };
-            buttonsContainer.appendChild(deleteButton);
-
-            li.appendChild(buttonsContainer);
-            li.onclick = () => loadConfig(index);
-            domainList.appendChild(li);
-        }
-    });
-});
-
