@@ -40,11 +40,15 @@ document.getElementById('saved-configs').onclick = function () {
 document.getElementById('saved-configs-close').onclick = function () {
     document.getElementById('saved-config-popup').style.display = 'none';
 }
+
+//close popup when clicking outside popup window
 window.onclick = function (event) {
-    const popup = document.getElementById('popup');
-    if (event.target === popup) {
-        popup.style.display = 'none';
-    }
+    const popups = document.querySelectorAll('.popup');
+    popups.forEach(popup => {
+        if (event.target === popup) {
+            popup.style.display = 'none';
+        }
+    });
 }
 
 // Toggle Advanced Options
