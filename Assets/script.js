@@ -61,8 +61,20 @@ customizeOptionsToggle.onclick = () => {
     customizeOptions.style.display = customizeOptions.style.display === 'none' ? 'block' : 'none';
 };
 
-const darkModeToggle = document.getElementById('darkModeToggle');
-darkModeToggle.addEventListener('click', () => {
+// Dark Mode
+document.getElementById('darkModeToggle').addEventListener('click', () => {
+    toggleDarkMode();
+});
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    toggleDarkMode();
+} else if(savedTheme === 'light') {
+} else {
+    if (window.matchMedia('(prefers-color-scheme: dark)')){
+        toggleDarkMode();
+    }
+}
+function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     document.querySelector('#generatedPassword').classList.toggle('dark-mode');
     document.querySelector('.container').classList.toggle('dark-mode');
@@ -83,7 +95,13 @@ darkModeToggle.addEventListener('click', () => {
     popups.forEach(popup => {
         popup.classList.toggle('dark-mode');
     })
-});
+    // Save the current theme to localStorage
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+}
 
 function handleSubmit(event) {
     event.preventDefault();
