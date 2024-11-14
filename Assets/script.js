@@ -189,11 +189,17 @@ async function uploadConfig(masterPassword) {
     reader.onload = async function (e) {
         const encryptedData = e.target.result;
         console.log("password:", masterPassword);
-        console.log(encryptedData);
         const decryptedData = await decryptData(encryptedData, masterPassword);
 
         const parsedConfigs = JSON.parse(decryptedData);
-        localStorage.setItem('configs', JSON.stringify(parsedConfigs));
+        const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+        parsedConfigs.forEach((config) => {
+            let exists = existingConfigs.some(existingConfig => existingConfig.domain === config.domain && existingConfig.username === config.username && existingConfig.name === config.name && existingConfig.customString === config.customString && existingConfig.month === config.month && existingConfig.year === config.year); 
+            if (!exists) {
+                existingConfigs.push(config);
+            }
+        });
+        localStorage.setItem('configs', JSON.stringify(existingConfigs));
         displaySavedDomains(); // Update the domain list
     };
 
