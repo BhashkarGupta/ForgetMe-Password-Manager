@@ -207,12 +207,19 @@ async function uploadConfig(masterPassword) {
     reader.readAsText(file);
 }
 
+//Display Domains
+let currentPage = 0;  
+const itemsPerPage = 5;  
 function displaySavedDomains() {
     const domainList = document.getElementById('domainList');
-    domainList.innerHTML = ''; // Clear previous entries
+    domainList.innerHTML = '';
     const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+    
+    const startIndex = currentPage * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, existingConfigs.length);
 
-    existingConfigs.forEach((config, index) => {
+    for (let i = startIndex; i < endIndex; i++) {
+        const config = existingConfigs[i];
         const li = document.createElement('li');
         const domainName = document.createElement('span');
         domainName.textContent = config.domain;
@@ -224,23 +231,49 @@ function displaySavedDomains() {
         const loadButton = document.createElement('button');
         loadButton.textContent = "Load";
         loadButton.classList.add('domainList-button', 'load');
-        loadButton.onclick = () => loadConfig(index);
+        loadButton.onclick = () => loadConfig(i);
         buttonsContainer.appendChild(loadButton);
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = "Delete";
         deleteButton.classList.add('domainList-button', 'delete');
         deleteButton.onclick = (e) => {
-            e.stopPropagation(); // Prevent triggering loadConfig
-            deleteConfig(index);
+            e.stopPropagation(); 
+            deleteConfig(i);
         };
         buttonsContainer.appendChild(deleteButton);
 
         li.appendChild(buttonsContainer);
-        li.onclick = () => loadConfig(index);
+        li.onclick = () => loadConfig(i);
         domainList.appendChild(li);
-    });
+    }
 
+    const paginationContainer = document.createElement('div');
+    paginationContainer.classList.add('pagination-container');
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = "<";
+    prevButton.disabled = currentPage === 0; 
+    prevButton.onclick = () => {
+        if (currentPage > 0) {
+            currentPage--;
+            displaySavedDomains(); 
+        }
+    };
+    paginationContainer.appendChild(prevButton);
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = ">";
+    nextButton.disabled = endIndex >= existingConfigs.length;  
+    nextButton.onclick = () => {
+        if (endIndex < existingConfigs.length) {
+            currentPage++;
+            displaySavedDomains(); 
+        }
+    };
+    paginationContainer.appendChild(nextButton);
+
+    domainList.appendChild(paginationContainer);
 }
 
 function deleteConfig(index) {
@@ -275,44 +308,86 @@ function loadConfig(index) {
 }
 
 // Search functionality
+let searchPage = 0;
 document.getElementById('searchInput').addEventListener('input', (event) => {
     const searchTerm = event.target.value.toLowerCase();
     const domainList = document.getElementById('domainList');
     const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
 
-    domainList.innerHTML = ''; // Clear previous entries
-    existingConfigs.forEach((config, index) => {
-        if (config.domain.toLowerCase().includes(searchTerm)) {
-            const li = document.createElement('li');
-            const domainName = document.createElement('span');
-            domainName.textContent = config.domain;
-            li.appendChild(domainName);
+    const filteredConfigs = existingConfigs.filter(config => 
+        config.domain.toLowerCase().includes(searchTerm)
+    );
 
-            const buttonsContainer = document.createElement('div');
-            buttonsContainer.classList.add('buttons-container');
+    const itemsPerPage = 3;
+    const startIndex = searchPage * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredConfigs.length);
 
-            const loadButton = document.createElement('button');
-            loadButton.textContent = "Load";
-            loadButton.classList.add('domainList-button', 'load');
-            loadButton.onclick = () => loadConfig(index);
-            buttonsContainer.appendChild(loadButton);
+    domainList.innerHTML = '';
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = "Delete";
-            deleteButton.classList.add('domainList-button', 'delete');
-            deleteButton.onclick = (e) => {
-                e.stopPropagation(); // Prevent triggering loadConfig
-                deleteConfig(index);
-            };
-            buttonsContainer.appendChild(deleteButton);
+    for (let i = startIndex; i < endIndex; i++) {
+        const config = filteredConfigs[i];
+        const li = document.createElement('li');
+        const domainName = document.createElement('span');
+        domainName.textContent = config.domain;
+        li.appendChild(domainName);
 
-            li.appendChild(buttonsContainer);
-            li.onclick = () => loadConfig(index);
-            domainList.appendChild(li);
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('buttons-container');
+
+        const loadButton = document.createElement('button');
+        loadButton.textContent = "Load";
+        loadButton.classList.add('domainList-button', 'load');
+        loadButton.onclick = () => loadConfig(i);
+        buttonsContainer.appendChild(loadButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "Delete";
+        deleteButton.classList.add('domainList-button', 'delete');
+        deleteButton.onclick = (e) => {
+            e.stopPropagation(); // Prevent triggering loadConfig
+            deleteConfig(i);
+        };
+        buttonsContainer.appendChild(deleteButton);
+
+        li.appendChild(buttonsContainer);
+        li.onclick = () => loadConfig(i);
+        domainList.appendChild(li);
+    }
+
+    const paginationContainer = document.createElement('div');
+    paginationContainer.classList.add('pagination-container');
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = "<";
+    prevButton.disabled = searchPage === 0; 
+    prevButton.onclick = () => {
+        if (searchPage > 0) {
+            searchPage--;
+            displaySearchResults(); 
         }
-    });
+    };
+    paginationContainer.appendChild(prevButton);
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = ">";
+    nextButton.disabled = endIndex >= filteredConfigs.length; 
+    nextButton.onclick = () => {
+        if (endIndex < filteredConfigs.length) {
+            searchPage++;
+            displaySearchResults(); 
+        }
+    };
+    paginationContainer.appendChild(nextButton);
+
+    domainList.appendChild(paginationContainer);
 });
 
+function displaySearchResults() {
+    const event = new Event('input');
+    document.getElementById('searchInput').dispatchEvent(event);
+}
+
+// Generate password
 async function generatePassword() {
     try {
         const masterPassword = document.getElementById('masterPassword').value;

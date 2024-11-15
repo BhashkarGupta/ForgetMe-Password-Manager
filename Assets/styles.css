@@ -370,6 +370,7 @@ ol>li {
 
 #domainList li:hover {
     background-color: #f1f1f1;
+    color: #333;
 }
 
 #domainList li span {
@@ -458,6 +459,20 @@ ol>li {
     transition: opacity 0.3s ease;
 }
 
+.pagination-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.pagination-container > button {
+    border-radius: 80%;
+    height: 30px;
+    max-width: 30px;
+    font-weight: bolder;
+    min-width: 0;
+    padding: 0%;
+}
+
 
 @media (max-width: 600px) {
     body {
@@ -526,6 +541,13 @@ ol>li {
         align-items: flex-start;
     }
 
+    li > span {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
     .buttons-container {
         width: 100%;
         justify-content: flex-start;
@@ -535,5 +557,8 @@ ol>li {
     .domainList-button {
         min-width: 70px;
         font-size: 12px;
+    }
+    .pagination-container {
+        justify-content: space-between;
     }
 }
