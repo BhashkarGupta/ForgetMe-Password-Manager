@@ -74,6 +74,7 @@ if (savedTheme === 'dark') {
         toggleDarkMode();
     }
 }
+
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     document.querySelector('#generatedPassword').classList.toggle('dark-mode');
