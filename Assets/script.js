@@ -63,6 +63,8 @@ window.onclick = function (event) {
     });
 }
 
+
+
 // Dark Mode
 document.getElementById('darkModeToggle').addEventListener('click', () => {
     toggleDarkMode();
@@ -70,16 +72,20 @@ document.getElementById('darkModeToggle').addEventListener('click', () => {
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
     document.body.classList.add('dark-mode');
+    document.getElementById('darkModeToggle').classList.add('active');
 } else if(savedTheme === 'light') {
     document.body.classList.remove('dark-mode');
+    document.getElementById('darkModeToggle').classList.remove('active');
 } else {
     if (window.matchMedia('(prefers-color-scheme: dark)')){
         document.body.classList.add('dark-mode');
+        document.getElementById('darkModeToggle').classList.add('active');
     }
 }
 
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
+    document.getElementById('darkModeToggle').classList.toggle('active');
     // Save the current theme to localStorage
     if (document.body.classList.contains('dark-mode')) {
         localStorage.setItem('theme', 'dark');
