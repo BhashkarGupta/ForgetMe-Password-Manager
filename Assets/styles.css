@@ -537,11 +537,12 @@ body.dark-mode #domainList li:hover {
 @media (max-width: 600px) {
     body {
         height: auto;
+        overflow: auto;
     }
 
     .container {
         padding: 1.5rem;
-        margin: 0.2rem 1rem;
+        margin: 0;
         margin-bottom: 80px;
     }
 
@@ -621,10 +622,10 @@ body.dark-mode #domainList li:hover {
     }
 
     .advanced-options-popup, .customize-options-popup {
-        margin-top: 80%;
+        margin-top: 100%;
     }
 
-    .customize-options-popup, .downloadConfig, .uploadConfig {
+    .downloadConfig, .uploadConfig {
         margin-top: 100%;
     }
 }
