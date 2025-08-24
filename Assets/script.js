@@ -167,7 +167,13 @@ function copyPassword() {
 
 async function saveConfig(masterPassword) {
     const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-    const encryptedConfigs = await encryptData(JSON.stringify(existingConfigs), masterPassword);
+    
+    const dataToEncrypt = {
+        canary: "__FORGETME_CANARY__",
+        configs: existingConfigs
+    };
+
+    const encryptedConfigs = await encryptData(JSON.stringify(dataToEncrypt), masterPassword);
 
     const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
     const downloadLink = document.createElement("a");
@@ -189,19 +195,28 @@ async function uploadConfig(masterPassword) {
     const reader = new FileReader();
     reader.onload = async function (e) {
         const encryptedData = e.target.result;
-        console.log("password:", masterPassword);
-        const decryptedData = await decryptData(encryptedData, masterPassword);
+        try {
+            const decryptedData = await decryptData(encryptedData, masterPassword);
+            const parsedData = JSON.parse(decryptedData);
 
-        const parsedConfigs = JSON.parse(decryptedData);
-        const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
-        parsedConfigs.forEach((config) => {
-            let exists = existingConfigs.some(existingConfig => existingConfig.domain === config.domain && existingConfig.username === config.username && existingConfig.name === config.name && existingConfig.customString === config.customString && existingConfig.month === config.month && existingConfig.year === config.year); 
-            if (!exists) {
-                existingConfigs.push(config);
+            if (parsedData.canary !== "__FORGETME_CANARY__") {
+                alert("Invalid password or corrupted file.");
+                return;
             }
-        });
-        localStorage.setItem('configs', JSON.stringify(existingConfigs));
-        displaySavedDomains(); // Update the domain list
+
+            const parsedConfigs = parsedData.configs;
+            const existingConfigs = JSON.parse(localStorage.getItem('configs')) || [];
+            parsedConfigs.forEach((config) => {
+                let exists = existingConfigs.some(existingConfig => existingConfig.domain === config.domain && existingConfig.username === config.username && existingConfig.name === config.name && existingConfig.customString === config.customString && existingConfig.month === config.month && existingConfig.year === config.year);
+                if (!exists) {
+                    existingConfigs.push(config);
+                }
+            });
+            localStorage.setItem('configs', JSON.stringify(existingConfigs));
+            displaySavedDomains(); // Update the domain list
+        } catch (error) {
+            alert("Invalid password or corrupted file.");
+        }
     };
 
     // Reading the file as text
