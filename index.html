@@ -7,13 +7,14 @@
     <title>Forget Me - Password Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pompiere&family=Ribeye+Marrow&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="Assets/styles.css">
     <link rel="icon" href="./Assets/favicon24.png" type="image/png">
 </head>
 
 <body>
+    <div id="particles-js"></div>
     <button id="openHowToPopup" class="sticky-button" type="button">How to use it?</button>
     <div id="howToPopup" class="popup">
         <div class="howToPopup">
@@ -91,7 +92,27 @@
                 </button>
             </div>
 
-            <div class="advanced-options" id="advancedOptions" style="display: none;">
+            <div class="result-container">
+                <span id="generatedPassword">Generated Password</span>
+                <button type="button" onclick="copyPassword()">
+                    <span class="material-icons icon">content_copy</span> Copy
+                </button>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">
+                    <span class="material-icons icon">vpn_key</span> Generate
+                </button>
+                <button id="saved-configs" type="button">
+                    <span class="material-icons icon">save</span>Saved Configs
+                </button>
+            </div>
+        </form>
+
+        <div id="advancedOptionsPopup" class="popup">
+            <div class="advanced-options-popup">
+                <span class="close" id="closeAdvancedOptions">&times;</span>
+                <h3>Advanced Options</h3>
                 <label for="name">Name: (optional)</label>
                 <input type="text" id="name">
 
@@ -117,8 +138,12 @@
                     <option value="12">December</option>
                 </select>
             </div>
+        </div>
 
-            <div class="customize-options" id="customizeOptions" style="display: none;">
+        <div id="customizeOptionsPopup" class="popup">
+            <div class="customize-options-popup">
+                <span class="close" id="closeCustomizeOptions">&times;</span>
+                <h3>Customize Password</h3>
                 <div class="checkbox-group">
                     <label><input type="checkbox" id="enforceSelection" checked> Enforce Selection</label>
                     <label><input type="checkbox" id="numbers" checked> Numbers</label>
@@ -130,23 +155,7 @@
                     <label><input type="checkbox" id="symbols" checked> Symbols</label>
                 </div>
             </div>
-
-            <div class="result-container">
-                <span id="generatedPassword">Generated Password</span>
-                <button type="button" onclick="copyPassword()">
-                    <span class="material-icons icon">content_copy</span> Copy
-                </button>
-            </div>
-
-            <div class="button-group">
-                <button type="submit">
-                    <span class="material-icons icon">vpn_key</span> Generate
-                </button>
-                <button id="saved-configs" type="button">
-                    <span class="material-icons icon">save</span>Saved Configs
-                </button>
-            </div>
-        </form>
+        </div>
 
         <div id="saved-config-popup" class="popup">
             <div class="saved-config-popup">
@@ -206,20 +215,9 @@
 
     </div>
 
+    <script src="Assets/particles.js"></script>
+    <script src="Assets/particles-config.js"></script>
     <script src="Assets/script.js"></script>
-    <script>
-        function updateTitle() {
-            const title = document.getElementById('main-title');
-            if (window.innerWidth > 600) {
-                title.innerHTML = '> Forget Me <';
-            } else {
-                title.innerHTML = 'Forget Me';
-            }
-        }
-        updateTitle();
-        window.addEventListener('resize', updateTitle);
-    </script>
-
 </body>
 
 </html>

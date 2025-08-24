@@ -2,9 +2,7 @@ const masterPassword = document.getElementById('masterPassword');
 const domain = document.getElementById('domain');
 const passwordLength = document.getElementById('passwordLength');
 const advancedOptionsToggle = document.getElementById('advancedOptionsToggle');
-const advancedOptions = document.getElementById('advancedOptions');
 const customizeOptionsToggle = document.getElementById('customizeOptionsToggle');
-const customizeOptions = document.getElementById('customizeOptions');
 const generatedPassword = document.getElementById('generatedPassword');
 
 // Event listeners
@@ -41,6 +39,20 @@ document.getElementById('saved-configs-close').onclick = function () {
     document.getElementById('saved-config-popup').style.display = 'none';
 }
 
+document.getElementById('advancedOptionsToggle').onclick = function () {
+    document.getElementById('advancedOptionsPopup').style.display = 'block';
+}
+document.getElementById('closeAdvancedOptions').onclick = function () {
+    document.getElementById('advancedOptionsPopup').style.display = 'none';
+}
+
+document.getElementById('customizeOptionsToggle').onclick = function () {
+    document.getElementById('customizeOptionsPopup').style.display = 'block';
+}
+document.getElementById('closeCustomizeOptions').onclick = function () {
+    document.getElementById('customizeOptionsPopup').style.display = 'none';
+}
+
 //close popup when clicking outside popup window
 window.onclick = function (event) {
     const popups = document.querySelectorAll('.popup');
@@ -51,15 +63,7 @@ window.onclick = function (event) {
     });
 }
 
-// Toggle Advanced Options
-advancedOptionsToggle.onclick = () => {
-    advancedOptions.style.display = advancedOptions.style.display === 'none' ? 'block' : 'none';
-};
 
-// Toggle Customize Options
-customizeOptionsToggle.onclick = () => {
-    customizeOptions.style.display = customizeOptions.style.display === 'none' ? 'block' : 'none';
-};
 
 // Dark Mode
 document.getElementById('darkModeToggle').addEventListener('click', () => {
@@ -67,35 +71,21 @@ document.getElementById('darkModeToggle').addEventListener('click', () => {
 });
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
-    toggleDarkMode();
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkModeToggle').classList.add('active');
 } else if(savedTheme === 'light') {
+    document.body.classList.remove('dark-mode');
+    document.getElementById('darkModeToggle').classList.remove('active');
 } else {
     if (window.matchMedia('(prefers-color-scheme: dark)')){
-        toggleDarkMode();
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeToggle').classList.add('active');
     }
 }
 
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
-    document.querySelector('#generatedPassword').classList.toggle('dark-mode');
-    document.querySelector('.container').classList.toggle('dark-mode');
-    document.querySelector('select').classList.toggle('dark-mode');
-    document.querySelector('.saved-config-popup').classList.toggle('dark-mode');
-    document.querySelector('.downloadConfig').classList.toggle('dark-mode');
-    document.querySelector('.uploadConfig').classList.toggle('dark-mode');
-    const labels = document.querySelectorAll('label');
-    labels.forEach(label => {
-        label.classList.toggle('dark-mode');
-    });
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
-        input.classList.toggle('dark-mode');
-    });
-    darkModeToggle.classList.toggle('active');
-    const popups = document.querySelectorAll('.howToPopup');
-    popups.forEach(popup => {
-        popup.classList.toggle('dark-mode');
-    })
+    document.getElementById('darkModeToggle').classList.toggle('active');
     // Save the current theme to localStorage
     if (document.body.classList.contains('dark-mode')) {
         localStorage.setItem('theme', 'dark');

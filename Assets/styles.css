@@ -1,11 +1,10 @@
 * {
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
     background: #f4f4f9;
-    background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='160' height='160' patternTransform='scale(3) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='%23f4f4f9ff'/><path d='M121.5 39.5V9.169c0-2.827 1.724-4.707 3.473-5.602l.707-.362c2.086-1.068 4.702-.631 6.359 1.026l1.985 1.985c1.349 1.349 3.235 2.018 5.14 2.128 12.336 0 12.336-18.505 0-18.505M40.75 39.499V9.17c0-2.827-1.724-4.707-3.473-5.602l-.707-.362c-2.086-1.068-4.702-.631-6.359 1.026l-1.985 1.985c-1.349 1.349-3.236 2.018-5.14 2.128-12.336 0-12.336-18.505 0-18.505m146.575 111.248c0-12.337-18.505-12.337-18.505 0 .11 1.904.78 3.79 2.128 5.139l1.985 1.985c1.657 1.657 2.094 4.273 1.026 6.36l-.362.706c-.895 1.75-2.775 3.474-5.602 3.474l-30.33-.001m49.66-63.086c0 12.336-18.505 12.336-18.505 0 .11-1.904.78-3.791 2.128-5.14l1.985-1.985c1.657-1.657 2.094-4.273 1.026-6.359l-.362-.707c-.895-1.749-2.775-3.474-5.602-3.473h-30.33m19.162 130.344c12.337 0 12.337-18.505 0-18.505-1.631 0-3.99.98-5.139 2.128l-1.985 1.985c-1.656 1.656-4.274 2.094-6.36 1.027l-.706-.362c-2.086-1.069-3.474-3.258-3.474-5.602v-34.302l.001-26.228c0-2.344-1.427-4.458-3.473-5.602l-.707-.361a5.83 5.83 0 00-6.36 1.026l-1.984 1.985c-1.144 1.152-3.508 2.128-5.14 2.128-12.336 0-12.336-18.505 0-18.505 1.904.11 3.715.86 5.14 2.128l1.985 1.985a5.812 5.812 0 006.359 1.026l.707-.362c1.287-1.485 3.473-2.775 3.473-5.602v-30.33M23.086 168.343c-12.336 0-12.336-18.505 0-18.505 1.632 0 3.992.98 5.14 2.128l1.985 1.985c1.656 1.656 4.274 2.094 6.359 1.027l.707-.362c2.086-1.069 3.474-3.258 3.474-5.602l-.001-34.302V88.485c0-2.344 1.387-4.533 3.473-5.602l.707-.361c2.085-1.068 4.703-.63 6.359 1.026l1.985 1.985c1.148 1.148 3.508 2.128 5.14 2.128 12.336 0 12.336-18.505 0-18.505-1.905.11-3.791.78-5.14 2.128l-1.985 1.985c-1.657 1.657-4.273 2.094-6.36 1.026l-.706-.362c-1.75-.895-3.474-2.775-3.474-5.602v-30.33m80.75 80.749H91.17c-2.827 0-4.707 1.724-5.602 3.473l-.362.707c-1.068 2.086-.631 4.702 1.026 6.359l1.985 1.985c1.349 1.349 2.018 3.236 2.128 5.14 0 12.336-18.505 12.336-18.505 0 0-1.632.98-3.992 2.128-5.14l1.985-1.985c1.656-1.656 2.094-4.274 1.026-6.359l-.361-.707c-1.069-2.086-3.258-3.474-5.602-3.473h-60.53c-2.344 0-4.533-1.387-5.602-3.473l-.362-.707c-1.067-2.085-.63-4.703 1.027-6.359l1.985-1.985c1.148-1.148 2.128-3.508 2.128-5.14 0-12.336-18.505-12.336-18.505 0M121.5 38H91.169c-2.827 0-4.707-1.724-5.602-3.473l-.362-.707c-1.068-2.086-.631-4.702 1.026-6.359l1.985-1.985c1.349-1.349 2.018-3.235 2.128-5.14C90.344 8 71.84 8 71.84 20.337c0 1.632.977 3.994 2.128 5.14.663.66 1.343 1.305 1.985 1.985 1.608 1.703 2.003 4.23 1.026 6.36-.11.24-.233.474-.361.706C75.48 36.577 73.359 38 71.015 38H36.712L10.485 38c-2.344 0-4.533 1.387-5.602 3.473-.12.236-.24.471-.362.707-1.067 2.085-.63 4.703 1.027 6.36l1.985 1.984c1.148 1.148 2.128 3.508 2.128 5.14C9.66 68-8.844 68-8.844 55.664'  stroke-width='1' stroke='%2343d34a4d' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>");
     color: #333;
     display: flex;
     justify-content: center;
@@ -14,30 +13,38 @@ body {
     margin: 0;
     transition: background 0.3s, color 0.3s;
     position: relative;
-    overflow: auto; 
+    overflow: auto;
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
 
 body.dark-mode {
-    background: #333;
-    background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='160' height='160' patternTransform='scale(3) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='%231d1d20ff'/><path d='M121.5 39.5V9.169c0-2.827 1.724-4.707 3.473-5.602l.707-.362c2.086-1.068 4.702-.631 6.359 1.026l1.985 1.985c1.349 1.349 3.235 2.018 5.14 2.128 12.336 0 12.336-18.505 0-18.505M40.75 39.499V9.17c0-2.827-1.724-4.707-3.473-5.602l-.707-.362c-2.086-1.068-4.702-.631-6.359 1.026l-1.985 1.985c-1.349 1.349-3.236 2.018-5.14 2.128-12.336 0-12.336-18.505 0-18.505m146.575 111.248c0-12.337-18.505-12.337-18.505 0 .11 1.904.78 3.79 2.128 5.139l1.985 1.985c1.657 1.657 2.094 4.273 1.026 6.36l-.362.706c-.895 1.75-2.775 3.474-5.602 3.474l-30.33-.001m49.66-63.086c0 12.336-18.505 12.336-18.505 0 .11-1.904.78-3.791 2.128-5.14l1.985-1.985c1.657-1.657 2.094-4.273 1.026-6.359l-.362-.707c-.895-1.749-2.775-3.474-5.602-3.473h-30.33m19.162 130.344c12.337 0 12.337-18.505 0-18.505-1.631 0-3.99.98-5.139 2.128l-1.985 1.985c-1.656 1.656-4.274 2.094-6.36 1.027l-.706-.362c-2.086-1.069-3.474-3.258-3.474-5.602v-34.302l.001-26.228c0-2.344-1.427-4.458-3.473-5.602l-.707-.361a5.83 5.83 0 00-6.36 1.026l-1.984 1.985c-1.144 1.152-3.508 2.128-5.14 2.128-12.336 0-12.336-18.505 0-18.505 1.904.11 3.715.86 5.14 2.128l1.985 1.985a5.812 5.812 0 006.359 1.026l.707-.362c1.287-1.485 3.473-2.775 3.473-5.602v-30.33M23.086 168.343c-12.336 0-12.336-18.505 0-18.505 1.632 0 3.992.98 5.14 2.128l1.985 1.985c1.656 1.656 4.274 2.094 6.359 1.027l.707-.362c2.086-1.069 3.474-3.258 3.474-5.602l-.001-34.302V88.485c0-2.344 1.387-4.533 3.473-5.602l.707-.361c2.085-1.068 4.703-.63 6.359 1.026l1.985 1.985c1.148 1.148 3.508 2.128 5.14 2.128 12.336 0 12.336-18.505 0-18.505-1.905.11-3.791.78-5.14 2.128l-1.985 1.985c-1.657 1.657-4.273 2.094-6.36 1.026l-.706-.362c-1.75-.895-3.474-2.775-3.474-5.602v-30.33m80.75 80.749H91.17c-2.827 0-4.707 1.724-5.602 3.473l-.362.707c-1.068 2.086-.631 4.702 1.026 6.359l1.985 1.985c1.349 1.349 2.018 3.236 2.128 5.14 0 12.336-18.505 12.336-18.505 0 0-1.632.98-3.992 2.128-5.14l1.985-1.985c1.656-1.656 2.094-4.274 1.026-6.359l-.361-.707c-1.069-2.086-3.258-3.474-5.602-3.473h-60.53c-2.344 0-4.533-1.387-5.602-3.473l-.362-.707c-1.067-2.085-.63-4.703 1.027-6.359l1.985-1.985c1.148-1.148 2.128-3.508 2.128-5.14 0-12.336-18.505-12.336-18.505 0M121.5 38H91.169c-2.827 0-4.707-1.724-5.602-3.473l-.362-.707c-1.068-2.086-.631-4.702 1.026-6.359l1.985-1.985c1.349-1.349 2.018-3.235 2.128-5.14C90.344 8 71.84 8 71.84 20.337c0 1.632.977 3.994 2.128 5.14.663.66 1.343 1.305 1.985 1.985 1.608 1.703 2.003 4.23 1.026 6.36-.11.24-.233.474-.361.706C75.48 36.577 73.359 38 71.015 38H36.712L10.485 38c-2.344 0-4.533 1.387-5.602 3.473-.12.236-.24.471-.362.707-1.067 2.085-.63 4.703 1.027 6.36l1.985 1.984c1.148 1.148 2.128 3.508 2.128 5.14C9.66 68-8.844 68-8.844 55.664'  stroke-width='1' stroke='%2345d34ca3' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>");
+    background: #0f0c29;
     color: #f4f4f9;
 }
 
 .container {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
     padding: 2rem;
     width: 100%;
     max-width: 600px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     margin: 1rem;
-    border: 2px solid #4A90E2;
-    transition: background 0.3s, border 0.3s;
+    transition: background 0.3s, border 0.3s, box-shadow 0.3s;
 }
 
-.container.dark-mode {
-    background: #444;
-    border: 2px solid #4A90E2;
+body.dark-mode .container {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 170, 255, 0.5);
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.5), 0 0 20px rgba(0, 170, 255, 0.5), 0 0 30px rgba(0, 170, 255, 0.5), 0 0 40px rgba(0, 170, 255, 0.5);
 }
 
 .header {
@@ -50,60 +57,94 @@ body.dark-mode {
 
 h1 {
     font-size: 4rem;
-    color: #4A90E2;
+    color: #333;
     text-align: center;
     margin: 0.2rem;
-    font-family: 'Ribeye Marrow', 'Courier New', Courier, monospace;
+    font-weight: 600;
+}
+
+body.dark-mode h1 {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.5);
 }
 
 h2 {
-    font-family: 'Pompiere', Courier, monospace;
+    font-family: 'Poppins', sans-serif;
     text-align: right;
     margin-bottom: 1.5rem;
     margin-top: 0.2rem;
+    font-weight: 300;
 }
 
 label {
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
-    color: #555;
+    color: #333;
     display: flex;
     justify-content: space-between;
 }
 
-label.dark-mode {
-    color: #fff;
+body.dark-mode label {
+    color: #eee;
 }
 
-#generatedPassword.dark-mode {
-    color: #555;
+#generatedPassword {
+    color: #333;
+}
+
+body.dark-mode #generatedPassword {
+    color: #fff;
 }
 
 input[type="text"],
 input[type="password"],
 input[type="number"] {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    color: #333;
     transition: border-color 0.3s, background 0.3s;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="password"],
+body.dark-mode input[type="number"] {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+input[type="number"]::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode input[type="text"]::placeholder,
+body.dark-mode input[type="password"],
+body.dark-mode input[type="number"]::placeholder {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="number"]:focus {
-    border-color: #4A90E2;
+    border-color: #00aaff;
     outline: none;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-mode input[type="text"]:focus,
+body.dark-mode input[type="password"]:focus,
+body.dark-mode input[type="number"]:focus {
+    background: rgba(255, 255, 255, 0.15);
 }
 
 input[type="checkbox"] {
     margin-right: 0.5rem;
-}
-
-input.dark-mode{
-    background-color: #333;
-    color: #ccc;
 }
 
 .checkbox-group {
@@ -126,35 +167,36 @@ input.dark-mode{
 }
 
 button {
-    background-color: #4A90E2;
+    background: #00aaff;
     color: white;
     border: none;
-    padding: 0.6rem 1rem;
+    padding: 0.75rem 1.5rem;
     cursor: pointer;
     border-radius: 4px;
     font-size: 0.9rem;
     flex: 1 1 48%;
     margin: 0.5rem;
     min-width: 120px;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px 0 rgba(0, 170, 255, 0.3);
 }
 
 button:hover {
-    background-color: #54bb35;
+    background: #0077cc;
     transform: translateY(-3px);
+    box-shadow: 0 6px 20px 0 rgba(0, 170, 255, 0.3);
 }
 
 input:hover {
-    border-color: #54bb35;
-    transform: translateY(-1px);
+    border-color: #00aaff;
 }
 
 button:disabled {
-    background-color: #ccc;
+    background: #ccc;
 }
 
 .result-container {
-    background: #eef;
+    background: rgba(0, 0, 0, 0.05);
     padding: 1rem;
     margin-top: 1rem;
     border-radius: 6px;
@@ -162,20 +204,12 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     transition: background 0.3s;
-    border: solid 2px #54bb35;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.result-container.dark-mode {
-    background: #555;
-}
-
-.advanced-options,
-.customize-options {
-    display: none;
-    margin-top: 1rem;
-    border: 2px solid #4A90E2;
-    border-radius: 6px;
-    padding: 0.75rem;
+body.dark-mode .result-container {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .result-container button {
@@ -193,7 +227,7 @@ button:disabled {
     margin-right: 4px;
 }
 
-.icon.active {
+.dark-mode-toggle .icon.active {
     transform: rotate(180deg);
 }
 
@@ -225,9 +259,13 @@ progress {
 }
 
 progress::-webkit-progress-bar {
-    background-color: #eee;
+    background-color: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     transition: color 0.3s ease;
+}
+
+body.dark-mode progress::-webkit-progress-bar {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 progress::-webkit-progress-value {
@@ -260,16 +298,18 @@ progress::-webkit-progress-value {
 
 select {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
-    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.5);
+    color: #333;
 }
 
-select.dark-mode{
-    background-color: #333;
-    color: #ccc;
+body.dark-mode select {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
 }
 
 .sticky-button {
@@ -277,12 +317,13 @@ select.dark-mode{
     bottom: 50px;
     right: 50px;
     height: 40px;
-    background-color: #ff7b00;
+    background: #00aaff;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 20px;
     font-weight: bolder;
+    box-shadow: 0 4px 15px 0 rgba(0, 170, 255, 0.3);
 }
 
 .popup {
@@ -307,24 +348,30 @@ ol>li {
 .howToPopup,
 .saved-config-popup,
 .downloadConfig,
-.uploadConfig {
-    background-color: #fff;
+.uploadConfig,
+.advanced-options-popup,
+.customize-options-popup {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
     margin: 15% auto;
     padding: 20px;
-    border: 2px solid #54bb35;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     min-width: 300px;
     max-width: 550px;
     border-radius: 8px;
-    color: #444;
+    color: #333;
 }
 
-.howToPopup.dark-mode,
-.saved-config-popup.dark-mode,
-.downloadConfig.dark-mode,
-.uploadConfig.dark-mode {
-    background-color: #474747;
-    border: 2px solid #54bb35;
-    color: #ffffff;
+body.dark-mode .howToPopup,
+body.dark-mode .saved-config-popup,
+body.dark-mode .downloadConfig,
+body.dark-mode .uploadConfig,
+body.dark-mode .advanced-options-popup,
+body.dark-mode .customize-options-popup {
+    background: rgba(15, 12, 41, 0.8);
+    border: 1px solid rgba(0, 170, 255, 0.5);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.5), 0 0 20px rgba(0, 170, 255, 0.5);
 }
 
 .close {
@@ -336,9 +383,14 @@ ol>li {
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+body.dark-mode .close:hover,
+body.dark-mode .close:focus {
+    color: #fff;
 }
 
 .domainList {
@@ -362,15 +414,22 @@ ol>li {
     align-items: center;
     padding: 1px 10px;
     margin: 5px 0;
-    border: 1px solid #54bb35;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
     transition: background-color 0.3s ease;
     box-sizing: border-box;
 }
 
+body.dark-mode #domainList li {
+    border: 1px solid rgba(0, 170, 255, 0.5);
+}
+
 #domainList li:hover {
-    background-color: #f1f1f1;
-    color: #333;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode #domainList li:hover {
+    background-color: rgba(0, 170, 255, 0.1);
 }
 
 #domainList li span {
@@ -399,8 +458,6 @@ ol>li {
 }
 
 .domainList-button:hover {
-    background-color: #007bff;
-    color: white;
     transform: scale(1.05);
 }
 
@@ -409,7 +466,7 @@ ol>li {
 }
 
 .domainList-button.load {
-    background-color: #28a745;
+    background: #00aaff;
     color: white;
 }
 
@@ -451,6 +508,8 @@ ol>li {
     opacity: 0;
     transition: opacity 0.3s ease, visibility 0s 0.3s;
     z-index: 5;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
 }
 
 .hint-container:hover .info-box {
@@ -492,7 +551,6 @@ ol>li {
     .result-container {
         flex-direction: column;
         align-items: stretch;
-        border: solid 2px #54bb35;
     }
 
     .result-container button {
