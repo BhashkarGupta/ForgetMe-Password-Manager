@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forget Me - Password Manager</title>
     <link rel="icon" href="./Assets/favicon24.png" type="image/png">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link
@@ -41,7 +41,10 @@
         }
     </script>
     <style>
-        .bg-white { background-color: rgb(255 255 255 / 0.1) !important; }
+        .bg-white {
+            background-color: rgb(255 255 255 / 0.1) !important;
+        }
+
         /* Custom Scrollbar for Webkit */
         ::-webkit-scrollbar {
             width: 8px;
@@ -83,6 +86,7 @@
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 16px;
+
             width: 16px;
             border-radius: 50%;
             background: #06b6d4;
@@ -119,6 +123,15 @@
             cursor: pointer;
             background: #475569;
             border-radius: 2px;
+        }
+
+        /* Hide browser default password reveal/clear buttons */
+        ::-ms-reveal {
+            display: none;
+        }
+
+        ::-ms-clear {
+            display: none;
         }
     </style>
 </head>
@@ -354,26 +367,26 @@
                     <!-- Section E: Storage -->
                     <div
                         class="bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-lg p-6">
-                        <div class="flex justify-between items-center mb-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white flex items-center">
                                 <i class="material-icons mr-2 text-gray-500">storage</i> Saved Configs
                             </h3>
-                            <div class="flex gap-2 flex-wrap">
+                            <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:gap-3 flex-wrap">
                                 <button id="saveConfigBtn"
-                                    class="text-xs bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-cyan-400 px-2 py-1 rounded hover:bg-blue-200 dark:hover:bg-slate-700 transition-colors font-medium">
-                                    Save
+                                    class="text-xs bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-cyan-400 px-3 py-1.5 rounded hover:bg-blue-200 dark:hover:bg-slate-700 transition-colors font-medium flex items-center gap-1">
+                                    <i class="material-icons text-sm">save</i> Save
                                 </button>
                                 <button id="downloadConfigBtn"
-                                    class="text-xs bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-1 rounded hover:bg-green-200 dark:hover:bg-green-900/40 transition-colors font-medium">
-                                    Download
+                                    class="text-xs bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-3 py-1.5 rounded hover:bg-green-200 dark:hover:bg-green-900/40 transition-colors font-medium flex items-center gap-1">
+                                    <i class="material-icons text-sm">download</i> Download
                                 </button>
                                 <button id="uploadConfigBtn"
-                                    class="text-xs bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 px-2 py-1 rounded hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors font-medium">
-                                    Upload
+                                    class="text-xs bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors font-medium flex items-center gap-1">
+                                    <i class="material-icons text-sm">upload</i> Upload
                                 </button>
                                 <button id="clearStorageBtn"
-                                    class="text-xs bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors font-medium">
-                                    Clear
+                                    class="text-xs bg-transparent border border-red-500 text-red-600 dark:text-red-400 px-3 py-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium flex items-center gap-1">
+                                    <i class="material-icons text-sm">delete</i> Clear
                                 </button>
                                 <input type="file" id="uploadFileInput" accept=".fmpm" class="hidden">
                             </div>
@@ -402,7 +415,8 @@
 
         <footer class="mt-8 text-center text-gray-400 dark:text-slate-600 text-sm">
             <p><a href="https://www.techfixerlab.com/" target="_blank" rel="noopener noreferrer"
-                class="text-blue-600 dark:text-cyan-400">#TechFixerLab</a> &copy; 2025 Forget Me. Secure. Stateless. Open Source.</p>
+                    class="text-blue-600 dark:text-cyan-400">#TechFixerLab</a> &copy; 2025 Forget Me. Secure. Stateless.
+                Open Source.</p>
         </footer>
 
         <!-- Password Modal -->

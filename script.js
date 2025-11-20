@@ -1,8 +1,3 @@
-/**
- * CORE LOGIC - PRESERVED VERBATIM
- * Do not modify these functions to ensure backward compatibility.
- */
-
 // 1. User Function: Generates the initial JSON structure
 function userFunction(domain, username, name, customString, month, year, passwordLength, charSet, enforceCharTypes) {
     if (!charSet.numbers && !charSet.lowercase && !charSet.uppercase && !charSet.symbols && !charSet.complexSymbols) {
@@ -57,12 +52,31 @@ function generateUserString(userJson) {
 // 3. Generate Password Function: Uses the master password and the final JSON to generate a password
 async function generatePasswordFromHash(masterPassword, finalJson) {
     const encoder = new TextEncoder();
-    const masterPasswordHash = await crypto.subtle.digest('SHA-256', encoder.encode(masterPassword));
-    // console.log(masterPasswordHash);
 
-    const combinedInput = new Uint8Array([...new Uint8Array(masterPasswordHash), ...encoder.encode(finalJson.finalString)]);
-    const finalHash = await crypto.subtle.digest('SHA-256', combinedInput);
-    // console.log(finalHash);
+    // Import master password as key material
+    const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(masterPassword),
+        { name: "PBKDF2" },
+        false,
+        ["deriveBits"]
+    );
+
+    // Derive bits using PBKDF2
+    // Salt is the user configuration string
+    // Iterations: 100,000
+    // Hash: SHA-256
+    // Output: 256 bits (32 bytes)
+    const finalHash = await crypto.subtle.deriveBits(
+        {
+            name: "PBKDF2",
+            salt: encoder.encode(finalJson.finalString),
+            iterations: 100000,
+            hash: "SHA-256"
+        },
+        keyMaterial,
+        256
+    );
 
     let characterSet = "";
     const numbers = "0123456789";
@@ -158,7 +172,7 @@ async function generatePasswordFromHash(masterPassword, finalJson) {
             password = password.substring(0, position) + character + password.substring(position + 1);
         }
     }
-
+    masterPasswordInput.value = '';
     return password;
 }
 
@@ -522,7 +536,6 @@ function showPasswordModal() {
     });
 }
 
-// Encryption & Download Logic
 // Encryption & Download Logic
 async function handleDownloadConfig() {
     const password = await showPasswordModal();
