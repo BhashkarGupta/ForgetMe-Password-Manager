@@ -135,6 +135,41 @@
         ::-ms-clear {
             display: none;
         }
+
+        /* Dark mode select styling */
+        .dark select {
+            background-color: rgb(30 41 59);
+            color: rgb(203 213 225);
+        }
+
+        .dark select option {
+            background-color: rgb(30 41 59);
+            color: rgb(203 213 225);
+        }
+
+        /* Enhanced select styling */
+        select {
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.2s ease;
+        }
+
+        select:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark select {
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark select:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        select option {
+            padding: 8px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -330,7 +365,7 @@
                                 <label
                                     class="block text-xs font-bold mb-1 text-gray-500 dark:text-slate-500 uppercase">Month</label>
                                 <select id="month"
-                                    class="w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded px-3 py-2 text-sm focus:border-blue-500 dark:focus:border-cyan-400 outline-none text-gray-700 dark:text-slate-300">
+                                    class="w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded px-3 py-2 text-sm font-mono focus:border-blue-500 dark:focus:border-cyan-400 outline-none text-gray-700 dark:text-slate-300 box-shadow-sm hover:shadow-md transition-shadow">
                                     <option value="" selected>None</option>
                                     <option value="1">January</option>
                                     <option value="2">February</option>
