@@ -1,10 +1,10 @@
 const CACHE_NAME = 'forgetme-v1';
 const urlsToCache = [
-  '/ForgetMe-Password-Manager/',
-  '/ForgetMe-Password-Manager/index.html',
-  '/ForgetMe-Password-Manager/script.js',
-  '/ForgetMe-Password-Manager/manifest.json',
-  '/ForgetMe-Password-Manager/Assets/favicon24.png'
+  './',
+  './index.html',
+  './script.js',
+  './manifest.json',
+  './Assets/favicon24.png'
 ];
 
 self.addEventListener('install', event => {
