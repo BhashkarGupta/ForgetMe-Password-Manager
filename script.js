@@ -403,7 +403,7 @@ function renderSavedConfigs() {
     });
 
     if (filteredConfigs.length === 0) {
-        savedConfigsList.innerHTML = '<li class="text-gray-500 italic">No saved configurations found.</li>';
+        savedConfigsList.innerHTML = '<li class="text-gray-500 italic">No Configuration saved yet.</li>';
         return;
     }
 

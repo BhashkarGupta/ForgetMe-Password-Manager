@@ -29,7 +29,7 @@
                         },
                         /* override gray.50 to have 0.7 alpha so `bg-gray-50` uses rgba(?, ?, ?, 0.7) */
                         gray: {
-                            50: 'rgba(249,250,251,0.7)'
+                            50: 'rgba(249,250,251,0.5)'
                         }
                     },
                     /* set backdrop blur sizes; override `md` to 2px */
@@ -41,6 +41,7 @@
         }
     </script>
     <style>
+        .bg-white { background-color: rgb(255 255 255 / 0.1) !important; }
         /* Custom Scrollbar for Webkit */
         ::-webkit-scrollbar {
             width: 8px;
@@ -400,7 +401,8 @@
         </main>
 
         <footer class="mt-8 text-center text-gray-400 dark:text-slate-600 text-sm">
-            <p>&copy; 2025 Forget Me #TechFixerLab. Secure. Stateless. Open Source.</p>
+            <p><a href="https://www.techfixerlab.com/" target="_blank" rel="noopener noreferrer"
+                class="text-blue-600 dark:text-cyan-400">#TechFixerLab</a> &copy; 2025 Forget Me. Secure. Stateless. Open Source.</p>
         </footer>
 
         <!-- Password Modal -->
@@ -411,7 +413,7 @@
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
                     <i class="material-icons mr-2 text-blue-600 dark:text-cyan-400">lock</i> Encryption Password
                 </h3>
-                <p class="text-gray-600 dark:text-slate-400 mb-4 text-sm">
+                <p class="text-white dark:text-slate-400 mb-4 text-sm">
                     Please enter a password to encrypt/decrypt your configuration file. This password is NOT stored.
                 </p>
                 <input type="password" id="modalPasswordInput" placeholder="Enter password"
