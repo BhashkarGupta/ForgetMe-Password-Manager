@@ -1,4 +1,4 @@
-const CACHE_NAME = 'forgetme-v1';
+const CACHE_NAME = 'forgetme-v2';
 const urlsToCache = [
   './',
   './index.html',
@@ -6,7 +6,8 @@ const urlsToCache = [
   './manifest.json',
   './Assets/favicon24.png',
   './Assets/icon-192x192.png',
-  './Assets/icon-512x512.png'
+  './Assets/icon-512x512.png',
+  'https://cdn.jsdelivr.net/npm/hash-wasm'
 ];
 
 self.addEventListener('install', event => {

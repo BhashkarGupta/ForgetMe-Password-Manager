@@ -13,6 +13,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
         rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hash-wasm"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -297,6 +298,15 @@
                                 class="material-icons transform group-open:rotate-180 transition-transform text-gray-400">expand_more</span>
                         </summary>
                         <div class="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-bold mb-1 text-gray-500 dark:text-slate-500 uppercase">Algorithm</label>
+                                <select id="algorithm"
+                                    class="w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded px-3 py-2 text-sm focus:border-blue-500 dark:focus:border-cyan-400 outline-none text-gray-700 dark:text-slate-300">
+                                    <option value="Argon2id" selected>Argon2id (Slow but More Secure)</option>
+                                    <option value="PBKDF2">PBKDF2 (Fast and more Compatible)</option>
+                                </select>
+                            </div>
                             <div>
                                 <label
                                     class="block text-xs font-bold mb-1 text-gray-500 dark:text-slate-500 uppercase">Name</label>

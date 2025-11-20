@@ -50,33 +50,55 @@ function generateUserString(userJson) {
 }
 
 // 3. Generate Password Function: Uses the master password and the final JSON to generate a password
-async function generatePasswordFromHash(masterPassword, finalJson) {
+async function generatePasswordFromHash(masterPassword, finalJson, algorithm = 'PBKDF2') {
     const encoder = new TextEncoder();
+    let finalHash;
 
-    // Import master password as key material
-    const keyMaterial = await crypto.subtle.importKey(
-        "raw",
-        encoder.encode(masterPassword),
-        { name: "PBKDF2" },
-        false,
-        ["deriveBits"]
-    );
-
-    // Derive bits using PBKDF2
-    // Salt is the user configuration string
-    // Iterations: 600,000
-    // Hash: SHA-256
-    // Output: 256 bits (32 bytes)
-    const finalHash = await crypto.subtle.deriveBits(
-        {
-            name: "PBKDF2",
+    if (algorithm === 'Argon2id') {
+        // Argon2id Implementation
+        // Salt: User configuration string
+        // Memory: 16MB (65536 KB)
+        // Iterations: 3
+        // Parallelism: 1
+        // Hash Length: 32 bytes (256 bits)
+        const hashUint8 = await hashwasm.argon2id({
+            password: masterPassword,
             salt: encoder.encode(finalJson.finalString),
-            iterations: 600000,
-            hash: "SHA-256"
-        },
-        keyMaterial,
-        256
-    );
+            parallelism: 1,
+            iterations: 3,
+            memorySize: 65536,
+            hashLength: 32,
+            outputType: 'binary'
+        });
+        finalHash = hashUint8.buffer;
+
+    } else {
+        // PBKDF2 Implementation (Legacy/Default)
+        // Import master password as key material
+        const keyMaterial = await crypto.subtle.importKey(
+            "raw",
+            encoder.encode(masterPassword),
+            { name: "PBKDF2" },
+            false,
+            ["deriveBits"]
+        );
+
+        // Derive bits using PBKDF2
+        // Salt is the user configuration string
+        // Iterations: 600,000
+        // Hash: SHA-256
+        // Output: 256 bits (32 bytes)
+        finalHash = await crypto.subtle.deriveBits(
+            {
+                name: "PBKDF2",
+                salt: encoder.encode(finalJson.finalString),
+                iterations: 600000,
+                hash: "SHA-256"
+            },
+            keyMaterial,
+            256
+        );
+    }
 
     let characterSet = "";
     const numbers = "0123456789";
@@ -115,7 +137,7 @@ async function generatePasswordFromHash(masterPassword, finalJson) {
     // console.log(hashLength);
 
     for (let i = 0; i < finalJson.passwordLength; i++) {
-        const byte = hashArray[i % hashLength]; // since using SHA256 (limited to 32 bytes, but password lengh allowed is 40)
+        const byte = hashArray[i % hashLength];
         const randomIndex = byte % characterSet.length;
         password += characterSet[randomIndex];
         // console.log(password);
@@ -208,6 +230,7 @@ const modalCancelBtn = document.getElementById('modalCancelBtn');
 const modalConfirmBtn = document.getElementById('modalConfirmBtn');
 
 // Legacy/Advanced Inputs
+const algorithmSelect = document.getElementById('algorithm');
 const nameInput = document.getElementById('name');
 const customStringInput = document.getElementById('customString');
 const yearInput = document.getElementById('year');
@@ -332,9 +355,10 @@ async function handleGenerate(e) {
             complexSymbols: complexSymbolsCheckbox.checked
         };
         const enforceCharTypes = enforceSelectionCheckbox.checked;
+        const algorithm = algorithmSelect.value;
 
         const userJson = userFunction(domain, username, name, customString, month, year, passwordLength, charSet, enforceCharTypes);
-        const password = await generatePasswordFromHash(masterPassword, generateUserString(userJson));
+        const password = await generatePasswordFromHash(masterPassword, generateUserString(userJson), algorithm);
 
         generatedPasswordDisplay.value = password;
         // Reset to hidden when generating new
@@ -385,7 +409,8 @@ function handleSaveConfig() {
             symbols: symbolsCheckbox.checked,
             complexSymbols: complexSymbolsCheckbox.checked
         },
-        enforceCharTypes: enforceSelectionCheckbox.checked
+        enforceCharTypes: enforceSelectionCheckbox.checked,
+        algorithm: algorithmSelect.value
         // Theme is NOT saved per config anymore
     };
 
@@ -460,6 +485,11 @@ function loadConfig(index) {
     yearInput.value = config.year || '';
     passwordLengthInput.value = config.passwordLength || 16;
     passwordLengthRange.value = config.passwordLength || 16;
+
+    // Load algorithm if present, default to PBKDF2
+    if (algorithmSelect) {
+        algorithmSelect.value = config.algorithm || 'PBKDF2';
+    }
 
     if (config.charSet) {
         numbersCheckbox.checked = config.charSet.numbers;
@@ -635,28 +665,51 @@ function base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-async function deriveKey(password, salt) {
+async function deriveKey(password, salt, algorithm = 'PBKDF2') {
     const encoder = new TextEncoder();
-    const passwordKey = await crypto.subtle.importKey(
-        "raw",
-        encoder.encode(password),
-        { name: "PBKDF2" },
-        false,
-        ["deriveKey"]
-    );
 
-    return crypto.subtle.deriveKey(
-        {
-            name: "PBKDF2",
-            salt: salt,
-            iterations: 600000,
-            hash: "SHA-256"
-        },
-        passwordKey,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["encrypt", "decrypt"]
-    );
+    if (algorithm === 'Argon2id') {
+        // Argon2id Key Derivation
+        const hashUint8 = await hashwasm.argon2id({
+            password: password,
+            salt: new Uint8Array(salt), // Ensure salt is Uint8Array
+            parallelism: 1,
+            iterations: 3,
+            memorySize: 65536,
+            hashLength: 32,
+            outputType: 'binary'
+        });
+
+        return crypto.subtle.importKey(
+            "raw",
+            hashUint8,
+            { name: "AES-GCM" },
+            false,
+            ["encrypt", "decrypt"]
+        );
+    } else {
+        // PBKDF2 Key Derivation
+        const passwordKey = await crypto.subtle.importKey(
+            "raw",
+            encoder.encode(password),
+            { name: "PBKDF2" },
+            false,
+            ["deriveKey"]
+        );
+
+        return crypto.subtle.deriveKey(
+            {
+                name: "PBKDF2",
+                salt: salt,
+                iterations: 600000,
+                hash: "SHA-256"
+            },
+            passwordKey,
+            { name: "AES-GCM", length: 256 },
+            false,
+            ["encrypt", "decrypt"]
+        );
+    }
 }
 
 async function encryptData(data, password) {
@@ -664,7 +717,8 @@ async function encryptData(data, password) {
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const iv = crypto.getRandomValues(new Uint8Array(12));
 
-    const key = await deriveKey(password, salt);
+    const algorithm = algorithmSelect.value;
+    const key = await deriveKey(password, salt, algorithm);
 
     const encryptedContent = await crypto.subtle.encrypt(
         { name: "AES-GCM", iv: iv },
@@ -675,7 +729,8 @@ async function encryptData(data, password) {
     return JSON.stringify({
         salt: arrayBufferToBase64(salt),
         iv: arrayBufferToBase64(iv),
-        data: arrayBufferToBase64(encryptedContent)
+        data: arrayBufferToBase64(encryptedContent),
+        kdf: algorithm // Store the KDF used
     });
 }
 
@@ -690,8 +745,9 @@ async function decryptData(jsonString, password) {
         const salt = base64ToArrayBuffer(encryptedObj.salt);
         const iv = base64ToArrayBuffer(encryptedObj.iv);
         const encryptedData = base64ToArrayBuffer(encryptedObj.data);
+        const kdf = encryptedObj.kdf || 'PBKDF2'; // Default to PBKDF2 for backward compatibility
 
-        const key = await deriveKey(password, salt);
+        const key = await deriveKey(password, salt, kdf);
 
         const decryptedContent = await crypto.subtle.decrypt(
             { name: "AES-GCM", iv: iv },
