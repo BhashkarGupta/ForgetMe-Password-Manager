@@ -64,14 +64,14 @@ async function generatePasswordFromHash(masterPassword, finalJson) {
 
     // Derive bits using PBKDF2
     // Salt is the user configuration string
-    // Iterations: 100,000
+    // Iterations: 600,000
     // Hash: SHA-256
     // Output: 256 bits (32 bytes)
     const finalHash = await crypto.subtle.deriveBits(
         {
             name: "PBKDF2",
             salt: encoder.encode(finalJson.finalString),
-            iterations: 100000,
+            iterations: 600000,
             hash: "SHA-256"
         },
         keyMaterial,
@@ -649,7 +649,7 @@ async function deriveKey(password, salt) {
         {
             name: "PBKDF2",
             salt: salt,
-            iterations: 100000,
+            iterations: 600000,
             hash: "SHA-256"
         },
         passwordKey,
