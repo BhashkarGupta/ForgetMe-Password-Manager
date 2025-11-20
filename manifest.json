@@ -1,0 +1,17 @@
+{
+  "name": "Forget Me - Password Manager",
+  "short_name": "ForgetMe",
+  "description": "Stateless Password Manager",
+  "start_url": "/ForgetMe-Password-Manager/",
+  "scope": "/ForgetMe-Password-Manager/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#06b6d4",
+  "icons": [
+    {
+      "src": "Assets/favicon24.png",
+      "sizes": "24x24",
+      "type": "image/png"
+    }
+  ]
+}
