@@ -523,6 +523,7 @@ function showPasswordModal() {
 }
 
 // Encryption & Download Logic
+// Encryption & Download Logic
 async function handleDownloadConfig() {
     const password = await showPasswordModal();
     if (!password) return; // User cancelled
@@ -535,8 +536,8 @@ async function handleDownloadConfig() {
     };
 
     try {
-        const encryptedConfigs = await encryptData(JSON.stringify(dataToEncrypt), password);
-        const configBlob = new Blob([encryptedConfigs], { type: "application/json" });
+        const encryptedJSON = await encryptData(JSON.stringify(dataToEncrypt), password);
+        const configBlob = new Blob([encryptedJSON], { type: "application/json" });
         const downloadLink = document.createElement("a");
         downloadLink.href = URL.createObjectURL(configBlob);
         downloadLink.download = "ForgetMe.fmpm";
@@ -559,9 +560,9 @@ async function handleUploadConfig(event) {
 
     const reader = new FileReader();
     reader.onload = async function (e) {
-        const encryptedData = e.target.result;
+        const fileContent = e.target.result;
         try {
-            const decryptedData = await decryptData(encryptedData, password);
+            const decryptedData = await decryptData(fileContent, password);
             const parsedData = JSON.parse(decryptedData);
 
             if (parsedData.canary !== "__FORGETME_CANARY__") {
@@ -597,57 +598,98 @@ async function handleUploadConfig(event) {
     reader.readAsText(file);
 }
 
-async function encryptData(data, masterPassword) {
-    const encoder = new TextEncoder();
-    const masterPasswordHash = await crypto.subtle.digest('SHA-256', encoder.encode(masterPassword));
-    const halfHash = masterPasswordHash.slice(0, masterPasswordHash.byteLength / 2);
+/**
+ * CRYPTO HELPERS
+ */
 
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const key = await crypto.subtle.importKey(
-        'raw',
-        halfHash,
-        { name: 'AES-GCM', length: 256 },
+function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
+function base64ToArrayBuffer(base64) {
+    const binary_string = window.atob(base64);
+    const len = binary_string.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+
+async function deriveKey(password, salt) {
+    const encoder = new TextEncoder();
+    const passwordKey = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(password),
+        { name: "PBKDF2" },
         false,
-        ['encrypt']
+        ["deriveKey"]
     );
 
-    const encryptedData = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv: iv },
+    return crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: salt,
+            iterations: 100000,
+            hash: "SHA-256"
+        },
+        passwordKey,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+    );
+}
+
+async function encryptData(data, password) {
+    const encoder = new TextEncoder();
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+
+    const key = await deriveKey(password, salt);
+
+    const encryptedContent = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv: iv },
         key,
         encoder.encode(data)
     );
 
-    const combined = new Uint8Array(iv.byteLength + encryptedData.byteLength);
-    combined.set(iv);
-    combined.set(new Uint8Array(encryptedData), iv.byteLength);
-
-    return btoa(String.fromCharCode(...combined));
+    return JSON.stringify({
+        salt: arrayBufferToBase64(salt),
+        iv: arrayBufferToBase64(iv),
+        data: arrayBufferToBase64(encryptedContent)
+    });
 }
 
-async function decryptData(data, masterPassword) {
-    const combined = new Uint8Array(atob(data).split("").map(c => c.charCodeAt(0)));
-    const iv = combined.slice(0, 12);
-    const encryptedData = combined.slice(12);
+async function decryptData(jsonString, password) {
+    try {
+        const encryptedObj = JSON.parse(jsonString);
 
-    const encoder = new TextEncoder();
-    const masterPasswordHash = await crypto.subtle.digest('SHA-256', encoder.encode(masterPassword));
-    const halfHash = masterPasswordHash.slice(0, masterPasswordHash.byteLength / 2);
+        if (!encryptedObj.salt || !encryptedObj.iv || !encryptedObj.data) {
+            throw new Error("Invalid file format");
+        }
 
-    const key = await crypto.subtle.importKey(
-        'raw',
-        halfHash,
-        { name: 'AES-GCM', length: 256 },
-        false,
-        ['decrypt']
-    );
+        const salt = base64ToArrayBuffer(encryptedObj.salt);
+        const iv = base64ToArrayBuffer(encryptedObj.iv);
+        const encryptedData = base64ToArrayBuffer(encryptedObj.data);
 
-    const decryptedData = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: iv },
-        key,
-        encryptedData
-    );
+        const key = await deriveKey(password, salt);
 
-    return new TextDecoder().decode(decryptedData);
+        const decryptedContent = await crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: iv },
+            key,
+            encryptedData
+        );
+
+        return new TextDecoder().decode(decryptedContent);
+    } catch (e) {
+        throw new Error("Decryption failed");
+    }
 }
 
 /**
