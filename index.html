@@ -1,222 +1,437 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="en" class="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forget Me - Password Manager</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="Assets/styles.css">
+    <title>Forget Me - Password Generator</title>
     <link rel="icon" href="./Assets/favicon24.png" type="image/png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        cyan: {
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                        },
+                        /* override gray.50 to have 0.7 alpha so `bg-gray-50` uses rgba(?, ?, ?, 0.7) */
+                        gray: {
+                            50: 'rgba(249,250,251,0.7)'
+                        }
+                    },
+                    /* set backdrop blur sizes; override `md` to 2px */
+                    backdropBlur: {
+                        md: '2px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar for Webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        /* Light Mode (Default) */
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Dark Mode */
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #06b6d4;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #22d3ee;
+        }
+
+        /* Range Slider Customization */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #06b6d4;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #475569;
+            border-radius: 2px;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        /* Firefox styles for range slider */
+        input[type=range]::-moz-range-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #06b6d4;
+            cursor: pointer;
+            border: none;
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #475569;
+            border-radius: 2px;
+        }
+    </style>
 </head>
 
-<body>
-    
-    <button id="openHowToPopup" class="sticky-button" type="button">How to use it?</button>
-    <div id="howToPopup" class="popup">
-        <div class="howToPopup">
-            <span class="close" id="closeHowToPopup">&times;</span>
-            <h3>How to Use the Password Manager</h3>
-            <p>
-                This password manager helps you create strong, unique passwords for each website or service, based on a
-                <strong>Master Password</strong> that only you know. The same input will always generate the same
-                password, ensuring consistency across devices without needing to store your passwords.
-            </p>
-            <ol>
-                <li>Enter your <strong>Master Password</strong> (a key only you know). This is the main password used to
-                    generate others securely.</li>
-                <li>Provide the <strong>Domain</strong> (e.g., google.com) to create a unique password for each site.
-                </li>
-                <li>Optionally, enter your <strong>Username</strong>, <strong>Name</strong>, or any other
-                    information to further personalize the password.</li>
-                <li>Choose the desired <strong>Password Length</strong>.</li>
-                <li>In <strong>Customize Password</strong>, select character sets (numbers, symbols, uppercase letters,
-                    etc.) to meet specific password requirements for websites.</li>
-                <li>Click <strong>Generate</strong> to create a strong, unique password that matches your input and
-                    preferences.</li>
-            </ol>
-        </div>
-    </div>
+<body
+    class="bg-gray-100 text-gray-900 dark:bg-slate-900 dark:text-slate-200 font-sans min-h-screen transition-colors duration-300 flex flex-col items-center py-6 px-4 relative">
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none -z-0"></canvas>
+    <div class="relative z-10 w-full max-w-6xl flex flex-col items-center my-auto">
 
-    <div class="container">
-        <div class="dark-mode-toggle">
-            <span id="darkModeToggle" class="material-icons icon">nightlight</span>
-        </div>
-        <div class="header">
-            <h1 id="main-title">Forget Me</h1>
-            <h2>- Password Manager</h2>
-        </div>
+        <!-- Header -->
+        <header class="w-full max-w-6xl flex justify-between items-center mb-6">
+            <div class="flex items-center gap-3">
+                <span class="material-icons text-4xl text-blue-600 dark:text-cyan-400">lock_reset</span>
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                        FORGET<span class="text-blue-600 dark:text-cyan-400">ME</span>
+                    </h1>
+                    <p class="text-sm text-gray-500 dark:text-slate-400 font-mono">Stateless Password Manager</p>
+                </div>
+            </div>
+            <button id="themeToggleBtn"
+                class="p-2 rounded-full bg-white dark:bg-slate-800 shadow-md hover:shadow-lg transition-all text-gray-600 dark:text-cyan-400 border border-gray-200 dark:border-slate-700 flex items-center justify-center">
+                <i class="material-icons">light_mode</i>
+            </button>
+        </header>
 
-        <form id="passwordManagerForm" onsubmit="return handleSubmit(event);">
-            <label for="masterPassword">
-                <span><span class="material-icons icon">lock</span> Master Password* :</span>
-                <div class="hint-container">
-                    <i class="material-icons icon">help</i>
-                    <div class="info-box howToPopup" id="passwordInfo">
-                        This is the master password or main password which will be use to generate the other passwords.It is advisable to use a complex password for this. Please make sure you keep is secret. 
+        <!-- Main Card -->
+        <main
+            class="w-full max-w-6xl bg-white/30 dark:bg-slate-900/60 rounded-2xl shadow-2xl border border-gray-200 dark:border-cyan-500/30 overflow-hidden backdrop-blur-md">
+
+            <div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
+
+                <!-- LEFT COLUMN: Inputs & Settings -->
+                <div class="lg:col-span-5 space-y-6">
+
+                    <!-- Section A: Primary Inputs -->
+                    <div class="space-y-4">
+                        <div>
+                            <label
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-cyan-400 uppercase tracking-wider">
+                                <i class="material-icons text-sm align-middle mr-1">vpn_key</i> Master Password
+                            </label>
+                            <div class="relative">
+                                <input type="password" id="masterPassword" placeholder="Your secret key (never saved)"
+                                    class="w-full bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-lg pl-4 pr-12 py-3 font-mono text-lg focus:border-blue-500 dark:focus:border-cyan-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-cyan-400/20 outline-none transition-all placeholder-gray-400 dark:placeholder-slate-600">
+                                <button id="toggleMasterPasswordBtn"
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-cyan-400 transition-colors flex items-center justify-center">
+                                    <i class="material-icons">visibility</i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-slate-300">
+                                <i class="material-icons text-sm align-middle mr-1">language</i> Domain
+                            </label>
+                            <input type="text" id="domain" placeholder="e.g. google.com"
+                                class="w-full bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-lg px-4 py-3 font-mono focus:border-blue-500 dark:focus:border-cyan-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-cyan-400/20 outline-none transition-all">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-slate-300">
+                                <i class="material-icons text-sm align-middle mr-1">person</i> Username <span
+                                    class="text-xs font-normal opacity-50">(Optional)</span>
+                            </label>
+                            <input type="text" id="username" placeholder="e.g. user@email.com"
+                                class="w-full bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-lg px-4 py-3 font-mono focus:border-blue-500 dark:focus:border-cyan-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-cyan-400/20 outline-none transition-all">
+                        </div>
                     </div>
-                </div>
-            </label>
-            <input type="password" id="masterPassword" required>
-            <div class="password-strength-container">
-                <progress id="strengthProgress" value="0" max="100"></progress>
-                <div class="password-strength" id="passwordStrength">Strength: Weak</div>
-            </div>
 
-            <label for="domain">
-                <span><span class="material-icons icon">language</span> Domain* : ( <strong>eg:</strong> <del>https://</del><span><strong>www.facebook.com</strong></span><del>/login/</del> )</span>
-                <div class="hint-container">
-                    <i class="material-icons icon">help</i>
-                    <div class="info-box howToPopup" id="domainInfo">
-                        In general, it is advisable to use the domain or service name of the website to remember it easily. But you can also use any other name which remind you of the website or service to make this more unique to you.
+                    <hr class="border-gray-200 dark:border-slate-700">
+
+                    <!-- Section B: Settings -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white flex items-center">
+                            <i class="material-icons mr-2 text-blue-500 dark:text-cyan-500">tune</i> Configuration
+                        </h3>
+
+                        <div class="space-y-6">
+                            <!-- Length Slider -->
+                            <div>
+                                <label
+                                    class="flex justify-between text-sm font-medium mb-2 text-gray-600 dark:text-slate-400">
+                                    Password Length
+                                    <input type="number" id="passwordLength" value="16" min="4" max="64"
+                                        class="w-16 bg-transparent text-right font-bold text-blue-600 dark:text-cyan-400 outline-none border-b border-gray-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-cyan-400">
+                                </label>
+                                <input type="range" id="passwordLengthRange" min="4" max="64" value="16"
+                                    class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:accent-cyan-400">
+                                <div class="flex justify-between text-xs text-gray-400 mt-1 font-mono">
+                                    <span>4</span>
+                                    <span>64</span>
+                                </div>
+                            </div>
+
+                            <!-- Charsets -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="flex items-center space-x-2 cursor-pointer group">
+                                    <input type="checkbox" id="uppercase" checked
+                                        class="form-checkbox h-5 w-5 text-blue-600 dark:text-cyan-500 rounded border-gray-300 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 focus:ring-offset-0 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-400">
+                                    <span
+                                        class="text-sm text-gray-700 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">A-Z
+                                        Uppercase</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer group">
+                                    <input type="checkbox" id="lowercase" checked
+                                        class="form-checkbox h-5 w-5 text-blue-600 dark:text-cyan-500 rounded border-gray-300 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 focus:ring-offset-0 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-400">
+                                    <span
+                                        class="text-sm text-gray-700 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">a-z
+                                        Lowercase</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer group">
+                                    <input type="checkbox" id="numbers" checked
+                                        class="form-checkbox h-5 w-5 text-blue-600 dark:text-cyan-500 rounded border-gray-300 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 focus:ring-offset-0 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-400">
+                                    <span
+                                        class="text-sm text-gray-700 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">0-9
+                                        Numbers</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer group">
+                                    <input type="checkbox" id="symbols" checked
+                                        class="form-checkbox h-5 w-5 text-blue-600 dark:text-cyan-500 rounded border-gray-300 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 focus:ring-offset-0 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-400">
+                                    <span
+                                        class="text-sm text-gray-700 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">!@#
+                                        Symbols</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer group">
+                                    <input type="checkbox" id="complexSymbols"
+                                        class="form-checkbox h-5 w-5 text-blue-600 dark:text-cyan-500 rounded border-gray-300 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 focus:ring-offset-0 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-400">
+                                    <span
+                                        class="text-sm text-gray-700 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">{}[]
+                                        Complex</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer group">
+                                    <input type="checkbox" id="enforceSelection" checked
+                                        class="form-checkbox h-5 w-5 text-blue-600 dark:text-cyan-500 rounded border-gray-300 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 focus:ring-offset-0 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-400">
+                                    <span
+                                        class="text-sm text-gray-700 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">Enforce
+                                        All</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
-            </label>
-            <input type="text" id="domain" required>
 
-            <label for="username">Username (optional):</label>
-            <input type="text" id="username">
+                <!-- SEPARATOR -->
 
-            <label for="passwordLength">Password Length (4-40):</label>
-            <input type="number" id="passwordLength" min="4" max="40" value="16">
 
-            <div class="button-group">
-                <button type="button" id="advancedOptionsToggle">
-                    <span class="material-icons icon">expand_more</span> Advanced Options
-                </button>
-                <button type="button" id="customizeOptionsToggle">
-                    <span class="material-icons icon">settings</span> Customize Password
-                </button>
-            </div>
+                <!-- RIGHT COLUMN: Legacy, Actions, Storage -->
+                <div
+                    class="lg:col-span-7 flex flex-col gap-6 lg:border-l lg:border-gray-200 lg:dark:border-slate-700 lg:pl-8">
 
-            <div class="result-container">
-                <span id="generatedPassword">Generated Password</span>
-                <button type="button" onclick="copyPassword()">
-                    <span class="material-icons icon">content_copy</span> Copy
-                </button>
-            </div>
+                    <!-- Section C: Legacy / Advanced -->
+                    <details
+                        class="group border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900/50">
+                        <summary
+                            class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors rounded-lg select-none">
+                            <span class="font-medium text-gray-600 dark:text-slate-400 flex items-center">
+                                <i class="material-icons mr-2">settings_applications</i> Legacy / Advanced Options
+                            </span>
+                            <span
+                                class="material-icons transform group-open:rotate-180 transition-transform text-gray-400">expand_more</span>
+                        </summary>
+                        <div class="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-bold mb-1 text-gray-500 dark:text-slate-500 uppercase">Name</label>
+                                <input type="text" id="name"
+                                    class="w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded px-3 py-2 text-sm focus:border-blue-500 dark:focus:border-cyan-400 outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold mb-1 text-gray-500 dark:text-slate-500 uppercase">Custom
+                                    String</label>
+                                <input type="text" id="customString"
+                                    class="w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded px-3 py-2 text-sm focus:border-blue-500 dark:focus:border-cyan-400 outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold mb-1 text-gray-500 dark:text-slate-500 uppercase">Year</label>
+                                <input type="number" id="year" min="1950" max="2050"
+                                    class="w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded px-3 py-2 text-sm focus:border-blue-500 dark:focus:border-cyan-400 outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold mb-1 text-gray-500 dark:text-slate-500 uppercase">Month</label>
+                                <select id="month"
+                                    class="w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded px-3 py-2 text-sm focus:border-blue-500 dark:focus:border-cyan-400 outline-none text-gray-700 dark:text-slate-300">
+                                    <option value="" selected>None</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </div>
+                        </div>
+                    </details>
 
-            <div class="button-group">
-                <button type="submit">
-                    <span class="material-icons icon">vpn_key</span> Generate
-                </button>
-                <button id="saved-configs" type="button">
-                    <span class="material-icons icon">save</span>Saved Configs
-                </button>
-            </div>
-        </form>
-
-        <div id="advancedOptionsPopup" class="popup">
-            <div class="advanced-options-popup">
-                <span class="close" id="closeAdvancedOptions">&times;</span>
-                <h3>Advanced Options</h3>
-                <label for="name">Name: (optional)</label>
-                <input type="text" id="name">
-
-                <label for="customString">Custom String: (optional)</label>
-                <input type="text" id="customString">
-
-                <label for="year">Year: (1950-2050): (optional)</label>
-                <input type="number" id="year" min="1950" max="2050" value="">
-                <label for="month">Month: (optional)</label>
-                <select id="month">
-                    <option value="" disabled selected>Select Month</option>
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="customizeOptionsPopup" class="popup">
-            <div class="customize-options-popup">
-                <span class="close" id="closeCustomizeOptions">&times;</span>
-                <h3>Customize Password</h3>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" id="enforceSelection" checked> Enforce Selection</label>
-                    <label><input type="checkbox" id="numbers" checked> Numbers</label>
-                    <label><input type="checkbox" id="lowercase" checked> Lowercase</label>
-                </div>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" id="complexSymbols"> Complex Symbols</label>
-                    <label><input type="checkbox" id="uppercase" checked> Uppercase</label>
-                    <label><input type="checkbox" id="symbols" checked> Symbols</label>
-                </div>
-            </div>
-        </div>
-
-        <div id="saved-config-popup" class="popup">
-            <div class="saved-config-popup">
-                <span class="close" id="saved-configs-close">&times;</span>
-                <h3>Previously Saved Configurations</h3>
-                <input type="text" id="searchInput" placeholder="Search domains..." />
-                <div class="domainList">
-                    <ul id="domainList"></ul>
-                </div>
-                <div class="button-group">
-                    <button id="openDownloadConfig">
-                        <span class="material-icons icon">save</span> Dowload Config
-                    </button>
-                    <button id="openUploadConfig">
-                        <span class="material-icons icon">folder_open</span> Upload Config
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="downloadConfig" class="popup popupMasterPassword">
-            <div class="downloadConfig">
-                <span class="close" id="closeDownloadConfig">&times;</span>
-                <h3>Please Enter Your Master Password for Encryption</h3>
-                <form id="passwordManagerDownload" onsubmit="handleDownloadConfig(event);">
-                    <label for="passwordDownload">
-                        <span><span class="material-icons icon">lock</span> Master Password* :</span>
-                    </label>
-                    <input type="password" id="passwordDownload" required>
-                    <div class="button-group">
-                        <button type="submit">
-                            <span class="material-icons icon">download</span> Download
+                    <!-- Section D: Actions -->
+                    <div class="space-y-4 flex-grow">
+                        <button id="generateBtn"
+                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-cyan-600 dark:to-blue-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-cyan-500 dark:hover:to-blue-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all flex justify-center items-center text-lg tracking-wide">
+                            <i class="material-icons mr-2">bolt</i> GENERATE PASSWORD
                         </button>
+
+                        <div class="relative group flex flex-col md:block">
+                            <input type="password" id="generatedPassword" readonly
+                                placeholder="Your password will appear here"
+                                class="w-full bg-gray-100 dark:bg-slate-900 border-2 border-gray-200 dark:border-cyan-500/50 rounded-xl pl-6 pr-4 md:pr-24 py-4 font-mono text-xl text-left text-gray-800 dark:text-cyan-300 focus:outline-none cursor-text">
+
+                            <div
+                                class="flex justify-end gap-2 mt-2 md:absolute md:right-2 md:top-2 md:bottom-2 md:mt-0">
+                                <button id="toggleGeneratedPasswordBtn"
+                                    class="bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-600 dark:text-cyan-400 px-3 rounded-lg border border-gray-200 dark:border-slate-600 shadow-sm transition-colors flex items-center">
+                                    <i class="material-icons text-sm">visibility</i>
+                                </button>
+                                <button id="copyBtn"
+                                    class="bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-600 dark:text-cyan-400 px-4 rounded-lg border border-gray-200 dark:border-slate-600 shadow-sm transition-colors flex items-center font-semibold">
+                                    <i class="material-icons mr-1 text-sm">content_copy</i> Copy
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </form>
+
+                    <!-- Section E: Storage -->
+                    <div
+                        class="bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-lg p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white flex items-center">
+                                <i class="material-icons mr-2 text-gray-500">storage</i> Saved Configs
+                            </h3>
+                            <div class="flex gap-2 flex-wrap">
+                                <button id="saveConfigBtn"
+                                    class="text-xs bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-cyan-400 px-2 py-1 rounded hover:bg-blue-200 dark:hover:bg-slate-700 transition-colors font-medium">
+                                    Save
+                                </button>
+                                <button id="downloadConfigBtn"
+                                    class="text-xs bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-1 rounded hover:bg-green-200 dark:hover:bg-green-900/40 transition-colors font-medium">
+                                    Download
+                                </button>
+                                <button id="uploadConfigBtn"
+                                    class="text-xs bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 px-2 py-1 rounded hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors font-medium">
+                                    Upload
+                                </button>
+                                <button id="clearStorageBtn"
+                                    class="text-xs bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors font-medium">
+                                    Clear
+                                </button>
+                                <input type="file" id="uploadFileInput" accept=".fmpm" class="hidden">
+                            </div>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="mb-3">
+                            <div class="relative">
+                                <i
+                                    class="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">search</i>
+                                <input type="text" id="searchConfigInput" placeholder="Search saved configs..."
+                                    class="w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg pl-9 pr-3 py-2 text-sm focus:border-blue-500 dark:focus:border-cyan-400 outline-none">
+                            </div>
+                        </div>
+
+                        <ul id="savedConfigsList" class="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                            <!-- List items injected by JS -->
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+        <footer class="mt-8 text-center text-gray-400 dark:text-slate-600 text-sm">
+            <p>&copy; 2025 Forget Me #TechFixerLab. Secure. Stateless. Open Source.</p>
+        </footer>
+
+        <!-- Password Modal -->
+        <div id="passwordModal"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 w-full max-w-md border border-gray-200 dark:border-slate-700 transform scale-95 opacity-0 transition-all duration-200"
+                id="passwordModalContent">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="material-icons mr-2 text-blue-600 dark:text-cyan-400">lock</i> Encryption Password
+                </h3>
+                <p class="text-gray-600 dark:text-slate-400 mb-4 text-sm">
+                    Please enter a password to encrypt/decrypt your configuration file. This password is NOT stored.
+                </p>
+                <input type="password" id="modalPasswordInput" placeholder="Enter password"
+                    class="w-full bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-lg px-4 py-3 font-mono text-lg focus:border-blue-500 dark:focus:border-cyan-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-cyan-400/20 outline-none mb-6">
+
+                <div class="flex justify-end gap-3">
+                    <button id="modalCancelBtn"
+                        class="px-4 py-2 rounded-lg text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors font-medium">
+                        Cancel
+                    </button>
+                    <button id="modalConfirmBtn"
+                        class="px-4 py-2 rounded-lg bg-blue-600 dark:bg-cyan-600 hover:bg-blue-700 dark:hover:bg-cyan-500 text-white transition-colors font-bold shadow-lg">
+                        Confirm
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div id="uploadConfig" class="popup popupMasterPassword">
-            <div class="uploadConfig">
-                <span class="close" id="closeUploadConfig">&times;</span>
-                <h3>Please Enter Your Master Password for Decryption</h3>
-                <form id="passwordManagerUpload" onsubmit="handleUploadConfig(event);">
-                    <label for="passwordUpload">
-                        <span><span class="material-icons icon">lock</span> Master Password* :</span>
-                    </label>
-                    <input type="password" id="passwordUpload" required>
-                    <input type="file" id="uploadFile" accept=".fmpm" required />
-                    <div class="button-group">
-                        <button type="submit">
-                            <span class="material-icons icon">upload</span> Upload
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-    </div>
-
-    
-    <script src="Assets/script.js"></script>
+    </div> <!-- End of relative wrapper -->
+    <script src="script.js"></script>
 </body>
 
 </html>
