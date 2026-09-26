@@ -1024,6 +1024,42 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 animateParticles();
 
+// PWA Installation & Service Worker Logic
+let deferredInstallPrompt = null;
+const installPwaBtn = document.getElementById('installPwaBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the default mini-infobar on mobile
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    // Show custom themed Install button
+    if (installPwaBtn) {
+        installPwaBtn.classList.remove('hidden');
+        installPwaBtn.classList.add('flex');
+    }
+});
+
+if (installPwaBtn) {
+    installPwaBtn.addEventListener('click', async () => {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        console.log(`User response to install prompt: ${outcome}`);
+        deferredInstallPrompt = null;
+        installPwaBtn.classList.remove('flex');
+        installPwaBtn.classList.add('hidden');
+    });
+}
+
+window.addEventListener('appinstalled', () => {
+    console.log('ForgetMe was successfully installed!');
+    deferredInstallPrompt = null;
+    if (installPwaBtn) {
+        installPwaBtn.classList.remove('flex');
+        installPwaBtn.classList.add('hidden');
+    }
+});
+
 // PWA Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
