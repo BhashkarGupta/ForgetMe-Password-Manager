@@ -1,4 +1,4 @@
-const CACHE_NAME = 'forgetme-v2';
+const CACHE_NAME = 'forgetme-v3';
 const urlsToCache = [
   './',
   './index.html',

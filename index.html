@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark">
 
 <head>
@@ -218,6 +218,36 @@
                                     class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-cyan-400 transition-colors flex items-center justify-center">
                                     <i class="material-icons">visibility</i>
                                 </button>
+                            </div>
+
+                            <!-- Master Password Feedback: Strength & Verification Stamp -->
+                            <div class="mt-2.5 space-y-2">
+                                <!-- Strength Meter Bar & Label -->
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="flex-1 grid grid-cols-4 gap-1.5 h-1.5" title="Password strength meter">
+                                        <div id="strengthBar1" class="rounded-full bg-gray-200 dark:bg-slate-700/60 transition-all duration-300"></div>
+                                        <div id="strengthBar2" class="rounded-full bg-gray-200 dark:bg-slate-700/60 transition-all duration-300"></div>
+                                        <div id="strengthBar3" class="rounded-full bg-gray-200 dark:bg-slate-700/60 transition-all duration-300"></div>
+                                        <div id="strengthBar4" class="rounded-full bg-gray-200 dark:bg-slate-700/60 transition-all duration-300"></div>
+                                    </div>
+                                    <span id="strengthText" class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-slate-500 shrink-0 text-right min-w-[75px] transition-colors">
+                                        Empty
+                                    </span>
+                                </div>
+
+                                <!-- Visual Verification Stamp (Emoji Fingerprint) -->
+                                <div class="flex items-center justify-between text-xs pt-0.5">
+                                    <div class="flex items-center gap-1.5 text-gray-500 dark:text-slate-400"
+                                         title="Visual verification stamp: Changes if you mistype even one character, so you can verify your master password without revealing it.">
+                                        <i class="material-icons text-xs text-blue-500 dark:text-cyan-400">fingerprint</i>
+                                        <span class="text-[11px] font-medium tracking-wide">Verification Stamp:</span>
+                                    </div>
+                                    <div id="masterPasswordFingerprint"
+                                         title="Visual Emoji Stamp: Changes if you mistype any character. Confirms your master password is typed correctly without unmasking it."
+                                         class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-100 dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700/70 text-sm tracking-wider select-none transition-all shadow-inner">
+                                        <span class="text-gray-300 dark:text-slate-600 tracking-widest text-xs">••••</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

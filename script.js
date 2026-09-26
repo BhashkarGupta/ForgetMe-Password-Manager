@@ -56,14 +56,21 @@ async function generatePasswordFromHash(masterPassword, finalJson, algorithm = '
 
     if (algorithm === 'Argon2id') {
         // Argon2id Implementation
-        // Salt: User configuration string
+        // Salt: User configuration string (Argon2 requires at least 8 bytes)
         // Memory: 16MB (65536 KB)
         // Iterations: 3
         // Parallelism: 1
         // Hash Length: 32 bytes (256 bits)
+        let salt = encoder.encode(finalJson.finalString);
+        if (salt.length < 8) {
+            const paddedSalt = new Uint8Array(8);
+            paddedSalt.set(salt);
+            salt = paddedSalt;
+        }
+
         const hashUint8 = await hashwasm.argon2id({
             password: masterPassword,
-            salt: encoder.encode(finalJson.finalString),
+            salt: salt,
             parallelism: 1,
             iterations: 3,
             memorySize: 65536,
@@ -195,6 +202,9 @@ async function generatePasswordFromHash(masterPassword, finalJson, algorithm = '
         }
     }
     masterPasswordInput.value = '';
+    if (typeof updateMasterPasswordStatus === 'function') {
+        updateMasterPasswordStatus();
+    }
     return password;
 }
 
@@ -205,6 +215,14 @@ async function generatePasswordFromHash(masterPassword, finalJson, algorithm = '
 // DOM Elements
 const masterPasswordInput = document.getElementById('masterPassword');
 const toggleMasterPasswordBtn = document.getElementById('toggleMasterPasswordBtn');
+const strengthBars = [
+    document.getElementById('strengthBar1'),
+    document.getElementById('strengthBar2'),
+    document.getElementById('strengthBar3'),
+    document.getElementById('strengthBar4')
+];
+const strengthText = document.getElementById('strengthText');
+const masterPasswordFingerprint = document.getElementById('masterPasswordFingerprint');
 const domainInput = document.getElementById('domain');
 const usernameInput = document.getElementById('username');
 const passwordLengthInput = document.getElementById('passwordLength');
@@ -272,10 +290,162 @@ function toggleTheme() {
     applyTheme(newTheme);
 }
 
+// 64 visually distinct emojis for deterministic master password verification seal
+const FINGERPRINT_EMOJIS = [
+    '⚡', '🔥', '💎', '🚀', '🌟', '🛡️', '🔑', '🎯',
+    '🦊', '🦁', '🐼', '🐨', '🐯', '🐸', '🐙', '🦄',
+    '🦉', '🐬', '🐺', '🦅', '🐝', '🦋', '🐢', '🦖',
+    '🪐', '🌈', '🌊', '🍀', '🌴', '🍄', '🌋', '🌙',
+    '☀️', '⭐', '🎲', '🧩', '💡', '🛸', '🎪', '🎨',
+    '👑', '🏆', '⚓', '🎸', '🎹', '🏹', '🔮', '🧭',
+    '🍎', '🍉', '🍓', '🍒', '🥑', '🍕', '🍩', '🍦',
+    '☕', '🍪', '🥨', '🍿', '🍭', '🎈', '🔔', '🎁'
+];
+
+function evaluatePasswordStrength(password) {
+    if (!password) {
+        return {
+            score: 0,
+            label: 'Empty',
+            textClass: 'text-gray-400 dark:text-slate-500',
+            barClass: '',
+            count: 0
+        };
+    }
+
+    const len = password.length;
+    let score = 0;
+
+    // Length scoring
+    if (len >= 8) score += 1;
+    if (len >= 12) score += 1;
+    if (len >= 16) score += 1;
+
+    // Character variety checks
+    const hasLower = /[a-z]/.test(password);
+    const hasUpper = /[A-Z]/.test(password);
+    const hasDigits = /[0-9]/.test(password);
+    const hasSymbols = /[^a-zA-Z0-9]/.test(password);
+
+    const varietyCount = [hasLower, hasUpper, hasDigits, hasSymbols].filter(Boolean).length;
+    if (varietyCount >= 3) score += 1;
+    if (varietyCount === 4 && len >= 10) score += 1;
+
+    // Penalties for trivial patterns
+    if (/^[0-9]+$/.test(password) || /^[a-zA-Z]+$/.test(password)) {
+        score = Math.max(1, score - 1);
+    }
+    if (/(.)\1{2,}/.test(password)) {
+        score = Math.max(1, score - 1);
+    }
+    const commonPatterns = ['password', '123456', 'qwerty', 'admin', 'welcome', 'letmein'];
+    if (commonPatterns.some(p => password.toLowerCase().includes(p))) {
+        score = Math.max(1, score - 2);
+    }
+
+    let finalScore = 1;
+    if (len < 6) {
+        finalScore = 1;
+    } else if (score <= 1) {
+        finalScore = 1;
+    } else if (score === 2) {
+        finalScore = 2;
+    } else if (score === 3) {
+        finalScore = 3;
+    } else {
+        finalScore = 4;
+    }
+
+    const levels = {
+        1: {
+            label: 'Weak',
+            textClass: 'text-rose-500 dark:text-rose-400',
+            barClass: 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]',
+            count: 1
+        },
+        2: {
+            label: 'Fair',
+            textClass: 'text-amber-500 dark:text-amber-400',
+            barClass: 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]',
+            count: 2
+        },
+        3: {
+            label: 'Strong',
+            textClass: 'text-blue-500 dark:text-cyan-400',
+            barClass: 'bg-blue-500 dark:bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.5)]',
+            count: 3
+        },
+        4: {
+            label: 'Very Strong',
+            textClass: 'text-emerald-500 dark:text-emerald-400',
+            barClass: 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]',
+            count: 4
+        }
+    };
+
+    return {
+        score: finalScore,
+        ...levels[finalScore]
+    };
+}
+
+async function generatePasswordFingerprint(password) {
+    if (!password) return null;
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(password));
+    const hashArray = new Uint8Array(hashBuffer);
+
+    return [
+        FINGERPRINT_EMOJIS[hashArray[0] % 64],
+        FINGERPRINT_EMOJIS[hashArray[1] % 64],
+        FINGERPRINT_EMOJIS[hashArray[2] % 64],
+        FINGERPRINT_EMOJIS[hashArray[3] % 64]
+    ];
+}
+
+let masterPasswordReqCounter = 0;
+async function updateMasterPasswordStatus() {
+    if (!masterPasswordInput || !strengthText || !masterPasswordFingerprint) return;
+
+    const password = masterPasswordInput.value;
+    const reqId = ++masterPasswordReqCounter;
+
+    // 1. Update Strength Meter
+    const strength = evaluatePasswordStrength(password);
+    strengthText.textContent = strength.label;
+    strengthText.className = 'text-xs font-semibold uppercase tracking-wider shrink-0 text-right min-w-[75px] transition-colors ' + strength.textClass;
+
+    const defaultBarClass = 'rounded-full bg-gray-200 dark:bg-slate-700/60 transition-all duration-300';
+    strengthBars.forEach((bar, index) => {
+        if (!bar) return;
+        if (index < strength.count) {
+            bar.className = 'rounded-full ' + strength.barClass + ' transition-all duration-300';
+        } else {
+            bar.className = defaultBarClass;
+        }
+    });
+
+    // 2. Update Visual Emoji Verification Stamp
+    if (!password) {
+        masterPasswordFingerprint.innerHTML = '<span class="text-gray-300 dark:text-slate-600 tracking-widest text-xs">••••</span>';
+        return;
+    }
+
+    const emojis = await generatePasswordFingerprint(password);
+    if (reqId !== masterPasswordReqCounter) return; // Prevent race conditions on fast typing
+
+    if (emojis) {
+        masterPasswordFingerprint.innerHTML = emojis.map(emoji =>
+            `<span class="inline-block transform hover:scale-125 transition-transform duration-150 cursor-default" title="Visual verification seal">${emoji}</span>`
+        ).join(' ');
+    }
+}
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     renderSavedConfigs();
+    updateMasterPasswordStatus();
 
     // Sync Range and Number inputs
     passwordLengthRange.addEventListener('input', (e) => {
@@ -285,7 +455,9 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordLengthRange.value = e.target.value;
     });
 
-    // Master Password Toggle
+    // Master Password Listeners
+    masterPasswordInput.addEventListener('input', updateMasterPasswordStatus);
+    masterPasswordInput.addEventListener('change', updateMasterPasswordStatus);
     toggleMasterPasswordBtn.addEventListener('click', () => {
         const type = masterPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         masterPasswordInput.setAttribute('type', type);
@@ -670,9 +842,16 @@ async function deriveKey(password, salt, algorithm = 'PBKDF2') {
 
     if (algorithm === 'Argon2id') {
         // Argon2id Key Derivation
+        let saltBytes = new Uint8Array(salt);
+        if (saltBytes.length < 8) {
+            const paddedSalt = new Uint8Array(8);
+            paddedSalt.set(saltBytes);
+            saltBytes = paddedSalt;
+        }
+
         const hashUint8 = await hashwasm.argon2id({
             password: password,
-            salt: new Uint8Array(salt), // Ensure salt is Uint8Array
+            salt: saltBytes,
             parallelism: 1,
             iterations: 3,
             memorySize: 65536,
